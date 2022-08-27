@@ -1,0 +1,442 @@
+/** @jsx wp.element.createElement */
+
+import { PannelUltimateBgControl } from '../common/PannelUltimateBgControl.js';
+
+export function ControlsSetParent(args) {
+
+  /* definitions */
+
+  const props = args.propsObject;
+  const att = args.propsObject.attributes;
+
+  const { __ } = wp.i18n;
+  const { MediaUpload, MediaUploadCheck, MediaPlaceholder, MediaReplaceFlow } = wp.blockEditor;
+  const { BlockVerticalAlignmentToolbar, BlockControls, InspectorControls, AlignmentToolbar } = wp.blockEditor;
+  const {
+    Button, ButtonGroup, ToolbarGroup, Toolbar, ToolbarButton, Dashicon, SVG, Path, PanelBody, PanelRow, SelectControl, ColorIndicator,
+    RangeControl, Flex, FlexItem, FlexBlock, Icon, CheckboxControl, Disabled, ToggleControl, __experimentalRadioGroup, __experimentalRadio
+  } = wp.components;
+  const { useState, useEffect, Fragment } = wp.element;
+  const { useSelect } = wp.data;
+
+  const slickPath = "#html-gallery-"+att.blockID;
+  function stop() {
+    jQuery(slickPath+".slick-initialized").slick( 'unslick' );
+  }
+
+  let responsiveOptions = [];
+  if ( att.responsiveSM ) responsiveOptions.push({ breakpoint: 576, settings: { slidesToShow: att.slidesToShowSM, slidesToScroll: att.slidesToScrollSM } });
+  if ( att.responsiveMD ) responsiveOptions.push({ breakpoint: 768, settings: { slidesToShow: att.slidesToShowMD, slidesToScroll: att.slidesToScrollMD } });
+  if ( att.responsiveLG ) responsiveOptions.push({ breakpoint: 960, settings: { slidesToShow: att.slidesToShowLG, slidesToScroll: att.slidesToScrollLG } });
+  if ( att.responsiveXL ) responsiveOptions.push({ breakpoint: 1140, settings: { slidesToShow: att.slidesToShowXL, slidesToScroll: att.slidesToScrollXL } });
+
+  function start() {
+    jQuery(slickPath).not('.slick-initialized').slick({
+      slidesToShow: att.slidesToShow,
+      slidesToScroll: 1,
+      arrows: att.arrows,
+      dots: att.dots,
+      infinite: att.infinite,
+      autoplay: att.autoplay,
+      fade: false,
+      pauseOnHover: att.pauseOnHover,
+      pauseOnFocus: att.pauseOnFocus,
+      touchMove: false,
+      swipeToSlide: false,
+      responsive: responsiveOptions,
+      centerMode: att.centerMode,
+      adaptiveHeight: att.adaptiveHeight,
+      variableWidth: att.variableWidth,
+    });
+  }
+  function prevSlide() {
+    jQuery(slickPath).slick( 'slickPrev' );
+  }
+  function nextSlide() {
+    jQuery(slickPath).slick( 'slickNext' );
+  }
+  function addEmptySlide(slideProps={}) {
+    var block = wp.blocks.createBlock('k-blocks-slick-html-child/k-blocks', slideProps);
+    wp.data.dispatch('core/block-editor').insertBlocks(block, 0, props.clientId);
+  }
+  function setSliderAttribute( attribute, newcontent ) {
+    props.setAttributes( { [attribute]: newcontent } );
+    jQuery(slickPath+".slick-initialized").slick('slickSetOption', { [attribute]: newcontent }, true);
+  }
+  function setRestartAttribute( attribute, newcontent ) {
+    stop();
+    props.setAttributes( { [attribute]: newcontent } );
+  }
+
+  useEffect(() => {
+    if ( props.editMode ) stop();
+    else start();
+  });
+
+  /* output */
+
+  return (
+
+    <Fragment>
+
+      <BlockControls>
+        { !props.editMode &&
+          <Toolbar>
+            <ToolbarButton
+              icon='arrow-left-alt2'
+              title='Previous Slide'
+              onClick={ prevSlide }
+            />
+            <ToolbarButton
+              icon='arrow-right-alt2'
+              title='Next Slide'
+              onClick={ nextSlide }
+            />
+          </Toolbar>
+        }
+        {/* disable adding */}
+        { false &&
+
+          <Toolbar>
+            <ToolbarButton
+              icon='plus-alt2'
+              title='Add new slide before'
+              onClick={ addEmptySlide }
+            />
+          </Toolbar>
+
+        }
+        <Toolbar>
+          <ToolbarButton
+            icon='edit'
+            title='Edit mode'
+            onClick={ props.toggleEditMode }
+            isActive = { props.editMode }
+          />
+        </Toolbar>
+      </BlockControls>
+
+      <InspectorControls>
+
+
+        <PanelBody title={__('Slider options')} >
+          <Button
+            icon='edit'
+            title='Edit mode'
+            isSecondary
+            style = { { 'marginTop': '0.5rem', 'marginBottom': '1.5rem',  } }
+            onClick={ props.toggleEditMode }
+            isActive = { props.editMode }
+          >
+            { props.editMode && __('Preview mode') } { !props.editMode && __('Edit mode') }
+          </Button>
+          <Fragment>
+            <RangeControl
+              value={ att.minHeight }
+              onChange={ ( newvalue ) => props.setAttributes( { minHeight: newvalue } ) }
+              min={ 0 }
+              max={ 50 }
+              label={ __('Slide body min height'+' (Rem)') }
+              type="Rem"
+            />
+            <RangeControl
+              value={ att.slidesToShow }
+              onChange={ (newval) => {
+                if (newval!=1) props.setAttributes( { fade: false } );
+                setSliderAttribute( 'slidesToShow', newval);
+              } }
+              min={ 1 }
+              max={ 12 }
+              label={ __('Slides to Show') }
+            />
+            <RangeControl
+              value={ att.slidesToScroll }
+              onChange={ (newval) => setSliderAttribute( 'slidesToScroll', newval) }
+              min={ 1 }
+              max={ 12 }
+              label={ __('Slides to Scroll') }
+            />
+            <ToggleControl
+              label={__('Arrows')}
+              checked={ att.arrows }
+              onChange={ () => setSliderAttribute( 'arrows', !att.arrows )  }
+            />
+            <ToggleControl
+              label={__('Dots')}
+              checked={ att.dots }
+              onChange={ () => setSliderAttribute( 'dots', !att.dots )  }
+            />
+            <ToggleControl
+              label={__('Infinite')}
+              checked={ att.infinite }
+              onChange={ () => setSliderAttribute( 'infinite', !att.infinite )  }
+            />
+            <ToggleControl
+              label={__('Autoplay')}
+              checked={ att.autoplay }
+              onChange={ () => setSliderAttribute( 'autoplay', !att.autoplay )  }
+            />
+            <ToggleControl
+              label={__('Pause autoplay on hover')}
+              checked={ att.pauseOnHover }
+              onChange={ () => setSliderAttribute( 'pauseOnHover', !att.pauseOnHover )  }
+            />
+            <ToggleControl
+              label={__('Fade')}
+              checked={ att.fade }
+              onChange={ () => {
+                setSliderAttribute( 'slidesToShow', 1);
+                setSliderAttribute( 'slidesToScroll', 1)
+                props.setAttributes( { fade: !att.fade, responsiveSM: false, responsiveMD: false, responsiveLG: false, responsiveXL: false } );
+              } }
+            />
+            <ToggleControl
+              label={__('Center Mode')}
+              checked={ att.centerMode }
+              onChange={ () => setRestartAttribute( 'centerMode', !att.centerMode )  }
+            />
+            <ToggleControl
+              label={__('Adaptive Height')}
+              checked={ att.adaptiveHeight }
+              onChange={ () => setRestartAttribute( 'adaptiveHeight', !att.adaptiveHeight )  }
+            />
+            <ToggleControl
+              label={__('Variable Width')}
+              checked={ att.variableWidth }
+              onChange={ () => setRestartAttribute( 'variableWidth', !att.variableWidth )  }
+            />
+          </Fragment>
+        </PanelBody>
+
+
+
+        <PanelBody title={__('Control style options')} initialOpen={ false }>
+
+          { att.arrows &&
+            <Fragment>
+              <Flex style = { { 'marginBottom': '1rem', 'marginTop': '0.5rem'  } }>
+                <FlexItem className="css-wdf2ti-Wrapper">
+                  <label className="k-sliderlabel">Arrows Color<ColorIndicator colorValue={ ( att.arrowsColorClass ? "#ffffff" : "#1e1e1e" )  } /></label>
+                </FlexItem>
+                <FlexItem>
+                  <ButtonGroup>
+                    <Button isSmall className={ att.arrowsColorClass==''?'is-primary':'' } onClick={ () => props.setAttributes({ arrowsColorClass: "" }) }>Dark</Button>
+                    <Button isSmall className={ att.arrowsColorClass=='light-arrows'?'is-primary':'' } onClick={ () => props.setAttributes({ arrowsColorClass: "light-arrows" }) }>Light</Button>
+                  </ButtonGroup>
+                </FlexItem>
+              </Flex>
+              <Flex style = { { 'marginBottom': '0.5rem'  } }>
+                <FlexItem className="css-wdf2ti-Wrapper">
+                  <label>Arrow Size</label>
+                </FlexItem>
+                <FlexItem>
+                  <SelectControl
+                    value={ att.arrowsSizeClass }
+                    options={ [
+                      { label: 'Big', value: 'big-arrows' },
+                      { label: 'Medium', value: '' },
+                      { label: 'Small', value: 'small-arrows' },
+                    ] }
+                    onChange={ ( size ) => props.setAttributes({ arrowsSizeClass: size }) }
+                  />
+                </FlexItem>
+              </Flex>
+              <Flex style = { { 'marginBottom': '2rem',  } }>
+                <FlexItem className="css-wdf2ti-Wrapper">
+                  <label>Arrow Position</label>
+                </FlexItem>
+                <FlexItem>
+                  <SelectControl
+                    value={ att.arrowsPositionClass }
+                    options={ [
+                      { label: 'Outside', value: 'arrows-outer' },
+                      { label: 'Inside', value: 'arrows-inner' },
+                      { label: 'Bottom', value: 'arrows-bottom' },
+                    ] }
+                    onChange={ ( pos ) => props.setAttributes({ arrowsPositionClass: pos }) }
+                  />
+                </FlexItem>
+              </Flex>
+            </Fragment>
+          }
+
+          { att.dots &&
+            <Fragment>
+              <Flex style = { { 'marginBottom': '1rem', 'marginTop': '0.5rem'  } }>
+                <FlexItem className="css-wdf2ti-Wrapper">
+                  <label className="k-sliderlabel">Dots Color<ColorIndicator colorValue={ ( att.dotsColorClass ? "#ffffff" : "#1e1e1e")  } /></label>
+                </FlexItem>
+                <FlexItem>
+                  <ButtonGroup>
+                    <Button isSmall className={ att.dotsColorClass==''?'is-primary':'' } onClick={ () => props.setAttributes({ dotsColorClass: "" }) }>Dark</Button>
+                    <Button isSmall className={ att.dotsColorClass=='light-dots'?'is-primary':'' } onClick={ () => props.setAttributes({ dotsColorClass: "light-dots" }) }>Light</Button>
+                  </ButtonGroup>
+                </FlexItem>
+              </Flex>
+              <Flex  style = { { 'marginBottom': '0.5rem'  } }>
+                <FlexItem className="css-wdf2ti-Wrapper">
+                  <label>Dots Size</label>
+                </FlexItem>
+                <FlexItem>
+                  <SelectControl
+                    value={ att.dotsSizeClass }
+                    options={ [
+                      { label: 'Big', value: 'big-dots' },
+                      { label: 'Medium', value: '' },
+                      { label: 'Small', value: 'small-dots' },
+                    ] }
+                    onChange={ ( size ) => props.setAttributes({ dotsSizeClass: size }) }
+                  />
+                </FlexItem>
+              </Flex>
+              <Flex style = { { 'marginBottom': '2rem',  } }>
+                <FlexItem className="css-wdf2ti-Wrapper">
+                  <label>Dots Position</label>
+                </FlexItem>
+                <FlexItem>
+                  <SelectControl
+                    value={ att.dotsPositionClass }
+                    options={ [
+                      { label: 'Outer', value: '' },
+                      { label: 'Inner', value: 'dots-inner' },
+                    ] }
+                    onChange={ ( pos ) => props.setAttributes({ dotsPositionClass: pos }) }
+                  />
+                </FlexItem>
+              </Flex>
+            </Fragment>
+          }
+
+        </PanelBody>
+
+
+        <PanelBody title={__('Responsive options')} initialOpen={ false }>
+          {/* small breakpoint */}
+          <CheckboxControl
+            label={__('Add breakpoint'+' SM')}
+            checked={ att.responsiveSM }
+            onChange={ () => {
+              if (att.responsiveSM) props.setAttributes( { fade: false } );
+              setRestartAttribute( 'responsiveSM', !att.responsiveSM );
+            }  }
+          />
+          { att.responsiveSM && (
+            <Fragment>
+              <RangeControl
+                beforeIcon="columns"
+                label={__('Slides to show')}
+                value={ att.slidesToShowSM }
+                onChange={ (newcontent) => setRestartAttribute( 'slidesToShowSM', newcontent )  }
+                min={ 1 }
+                max={ 10 }
+              />
+              <RangeControl
+                beforeIcon="share-alt2"
+                label={__('Slides to scroll')}
+                value={ att.slidesToScrollSM }
+                onChange={ (newcontent) => setRestartAttribute( 'slidesToScrollSM', newcontent )  }
+                min={ 1 }
+                max={ 10 }
+              />
+            </Fragment>
+          )}
+          {/* medium breakpoint */}
+          <CheckboxControl
+            label={__('Add breakpoint'+' MD')}
+            checked={ att.responsiveMD }
+            onChange={ () => {
+              if (att.responsiveSM) props.setAttributes( { fade: false } );
+              setRestartAttribute( 'responsiveMD', !att.responsiveMD );
+            }  }
+          />
+          { att.responsiveMD && (
+            <Fragment>
+              <RangeControl
+                beforeIcon="columns"
+                label={__('Slides to show')}
+                value={ att.slidesToShowMD }
+                onChange={ (newcontent) => {
+                  if (att.responsiveSM) props.setAttributes( { fade: false } );
+                  setRestartAttribute( 'slidesToShowMD', newcontent );
+                }  }
+                min={ 1 }
+                max={ 10 }
+              />
+              <RangeControl
+                beforeIcon="share-alt2"
+                label={__('Slides to scroll')}
+                value={ att.slidesToScrollMD }
+                onChange={ (newcontent) => setRestartAttribute( 'slidesToScrollMD', newcontent )  }
+                min={ 1 }
+                max={ 10 }
+              />
+            </Fragment>
+          )}
+          {/* large breakpoint */}
+          <CheckboxControl
+            label={__('Add breakpoint'+' LG')}
+            checked={ att.responsiveLG }
+            onChange={ () => {
+              if (att.responsiveSM) props.setAttributes( { fade: false } );
+              setRestartAttribute( 'responsiveLG', !att.responsiveLG );
+            }  }
+          />
+          { att.responsiveLG && (
+            <Fragment>
+              <RangeControl
+                beforeIcon="columns"
+                label={__('Slides to show')}
+                value={ att.slidesToShowLG }
+                onChange={ (newcontent) => setRestartAttribute( 'slidesToShowLG', newcontent )  }
+                min={ 1 }
+                max={ 10 }
+              />
+              <RangeControl
+                beforeIcon="share-alt2"
+                label={__('Slides to scroll')}
+                value={ att.slidesToScrollLG }
+                onChange={ (newcontent) => setRestartAttribute( 'slidesToScrollLG', newcontent )  }
+                min={ 1 }
+                max={ 10 }
+              />
+            </Fragment>
+          )}
+          {/* XL breakpoint */}
+          <CheckboxControl
+            label={__('Add breakpoint'+' XL')}
+            checked={ att.responsiveXL }
+            onChange={ () => {
+              if (att.responsiveSM) props.setAttributes( { fade: false } );
+              setRestartAttribute( 'responsiveXL', !att.responsiveXL );
+            }  }
+          />
+          { att.responsiveXL && (
+            <Fragment>
+              <RangeControl
+                beforeIcon="columns"
+                label={__('Slides to show')}
+                value={ att.slidesToShowXL }
+                onChange={ (newcontent) => setRestartAttribute( 'slidesToShowXL', newcontent )  }
+                min={ 1 }
+                max={ 10 }
+              />
+              <RangeControl
+                beforeIcon="share-alt2"
+                label={__('Slides to scroll')}
+                value={ att.slidesToScrollXL }
+                onChange={ (newcontent) => setRestartAttribute( 'slidesToScrollXL', newcontent )  }
+                min={ 1 }
+                max={ 10 }
+              />
+            </Fragment>
+          )}
+        </PanelBody>
+
+
+      </InspectorControls>
+
+    </Fragment>
+
+  );
+
+}

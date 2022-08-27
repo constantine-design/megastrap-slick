@@ -1,0 +1,94 @@
+/** @jsx wp.element.createElement */
+
+import { PannelUltimateBgControl } from '../common/PannelUltimateBgControl.js';
+
+export function ControlsChild(args) {
+
+  /* definitions */
+
+  const props = args.propsObject;
+  const atts = props.attributes;
+
+  const { __ } = wp.i18n;
+  const { MediaUpload, MediaUploadCheck, MediaPlaceholder, MediaReplaceFlow } = wp.blockEditor;
+  const { BlockVerticalAlignmentToolbar, BlockControls, InspectorControls, AlignmentToolbar } = wp.blockEditor;
+  const {
+    Button, ToolbarGroup, Toolbar, ToolbarButton, Dashicon, SVG, Path, PanelBody, PanelRow, SelectControl,
+    RangeControl, Flex, FlexItem, FlexBlock, Icon, CheckboxControl, Disabled
+  } = wp.components;
+  const { useState, useEffect, Fragment } = wp.element;
+
+  function BsBreakPoint( args ) {
+    var propName = args.attributeName;
+    return (
+      <Flex style={ { paddingLeft: '0.8rem', paddingRight: '0.8rem' } } >
+        <FlexItem style={ { paddingTop: '0.5rem', paddingBottom: '0.5rem' } } >
+          <CheckboxControl
+            label={ args.label }
+            checked={ Boolean(props.attributes[propName]) }
+            onChange={ ( newvalue ) => {
+              if ( Boolean(props.attributes[propName]) ) props.setAttributes( { [propName]: 0 } )
+              else props.setAttributes( { [propName]: 6 });
+            } }
+          />
+        </FlexItem>
+        <FlexBlock>
+          { Boolean(props.attributes[propName]) && (
+            <RangeControl
+              value={ props.attributes[propName] }
+              onChange={ ( newvalue ) => props.setAttributes( { [propName]: newvalue }) }
+              min={ 1 }
+              max={ 12 }
+            />
+          )}
+        </FlexBlock>
+      </Flex>
+    );
+  }
+
+  /* output */
+
+  return (
+
+    <Fragment>
+
+      <BlockControls>
+      </BlockControls>
+
+      <InspectorControls>
+        <PanelBody title={__('Grid')} >
+          <div className="k-bs-grid-cols-controls">
+            <BsBreakPoint attributeName="colBreakpoint" label="XS" />
+            <BsBreakPoint attributeName="colSmBreakpoint" label="SM" />
+            <BsBreakPoint attributeName="colMdBreakpoint" label="MD"  />
+            <BsBreakPoint attributeName="colLgBreakpoint" label="LG" />
+            <BsBreakPoint attributeName="colXlBreakpoint" label="XL" />
+          </div>
+        </PanelBody>
+        <PannelUltimateBgControl
+          // first toolbar: color block
+          colorValue={ atts.color }
+          onColorChange={ ( newVal ) => props.setAttributes({ color: newVal }) }
+          bgColorValue={ atts.bgColor }
+          onBgColorChange={ ( newVal ) => props.setAttributes({ bgColor: newVal }) }
+          // second toolbar: image block
+          bgImgUrlValue={ atts.bgImage }
+          bgImgIdValue={ atts.bgImageId }
+          onBgImgSelect={ ( newVal ) => props.setAttributes({ bgImage: newVal.url, bgImageId: newVal.id }) }
+          onSetDefaultClick={ () => props.setAttributes({ bgImage: "none", bgImageId: 0 }) }
+          // bg focal for second toolbar: optional
+          bgFocalValue={ atts.bgImageFocal }
+          onBgImageFocalChange={ ( newVal ) => props.setAttributes({ bgImageFocal: newVal }) }
+          // bg style for second toolbar: optional
+          bgStyleValue={ atts.bgImageType }
+          onBgStyleChange={ ( newVal ) => props.setAttributes({ bgImageType: newVal }) }
+          // third toolbar: gradient overlay block
+          gradientOvelayValue={ atts.bgGradient }
+          onGradientOverlayChange={ ( newVal ) => props.setAttributes({ bgGradient: newVal }) }
+        />
+      </InspectorControls>
+
+    </Fragment>
+  );
+
+}

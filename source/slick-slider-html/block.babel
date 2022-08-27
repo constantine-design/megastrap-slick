@@ -1,0 +1,404 @@
+/** @jsx wp.element.createElement */
+
+const { __ } = wp.i18n;
+const { registerBlockType } = wp.blocks;
+const { InnerBlocks } = wp.blockEditor;
+const { serverSideRender } = wp;
+const { BlockVerticalAlignmentToolbar, BlockControls, InspectorControls, AlignmentToolbar } = wp.blockEditor;
+const { Button, ToolbarGroup, Toolbar, ToolbarButton, Dashicon, SVG, Path, PanelBody, PanelRow, SelectControl, Placeholder, IsolatedEventContainer } = wp.components;
+const { useState, useEffect, Fragment } = wp.element;
+const { useSelect } = wp.data;
+
+import { bootstrapValignClasses } from '../common/common-functions.js';
+import { PannelUltimateBgControl } from '../common/PannelUltimateBgControl.js';
+import { ControlsSetParent } from './controls-parent.js';
+import { ControlsSetChild } from './controls-child.js';
+
+const BlockIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M7 6H1V12H7V6Z" fill="white" stroke="#3498DB" stroke-width="2"/>
+  <path d="M20 5H9V7H20V5Z" fill="#C4C4C4"/>
+  <path d="M20 11H9V13H20V11Z" fill="#C4C4C4"/>
+  <path d="M20 8H9V10H20V8Z" fill="#C4C4C4"/>
+  <path d="M14 16L11 17.7321V14.2679L14 16Z" fill="#1E1E1E"/>
+  <path d="M6 16L9 14.2679V17.7321L6 16Z" fill="#1E1E1E"/>
+  </svg>
+)
+const ChildBlockIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M19 3H1V17H19V3Z" fill="white" stroke="#3498DB" stroke-width="2"/>
+    <path d="M13 12H7V14H13V12Z" fill="#C4C4C4"/>
+    <path d="M14 6H6V8H14V6Z" fill="#C4C4C4"/>
+    <path d="M16 9H4V11H16V9Z" fill="#C4C4C4"/>
+  </svg>
+)
+
+
+/*============================================================================*/
+/*                              PARENTBLOCK BEGIN                             */
+/*============================================================================*/
+
+const withCustomClassName = wp.compose.createHigherOrderComponent( ( BlockListBlock ) => {
+  return ( props ) => {
+  if ( props.name !== 'k-blocks-slick-html-child/k-blocks' ) {
+    return <BlockListBlock { ...props } />
+  }
+  return (
+    <div class="k-blocks-slick-html-slide-content d-block">
+      <BlockListBlock { ...props } className={ "d-block" } />
+    </div>
+  ); };
+}, 'withClientIdClassName' );
+wp.hooks.addFilter( 'editor.BlockListBlock', 'example/filter-blocks', withCustomClassName );
+
+
+registerBlockType( 'k-blocks-slick-html-parent/k-blocks', {
+	title: __( 'HTML Slick Slider' ),
+	icon: BlockIcon,
+	category: 'k-common-blocks',
+	//parent: [ 'core/post-content' ], // only root block
+	supports: { anchor: true, html : false},
+	attributes: {
+    className: { type: 'string', default: '' },
+    anchor: { type: 'string' },
+    blockID: { type: 'string', default: '' },
+    minHeight: { type: 'integer', default: 7 },
+    /* slider */
+    slidesToShow: { type: 'integer', default: 1 },
+    slidesToScroll: { type: 'integer', default: 1 },
+    arrows: { type: 'boolean', default: true },
+    dots: { type: 'boolean', default: false },
+    infinite: { type: 'boolean', default: false },
+    autoplay: { type: 'boolean', default: false },
+    fade: { type: 'boolean', default: false },
+    pauseOnHover: { type: 'boolean', default: false },
+    arrowsColorClass: { type: 'string', default: '' },
+    arrowsSizeClass: { type: 'string', default: '' },
+    arrowsPositionClass: { type: 'string', default: '' },
+    dotsColorClass: { type: 'string', default: '' },
+    dotsSizeClass: { type: 'string', default: '' },
+    dotsPositionClass: { type: 'string', default: 'arrows-inner' },
+    centerMode: { type: 'boolean', default: false },
+    adaptiveHeight: { type: 'boolean', default: false },
+    variableWidth: { type: 'boolean', default: false },
+    /* responsive */
+    responsiveSM: { type: 'boolean', default: false },
+    slidesToShowSM: { type: 'number', default: 1 },
+    slidesToScrollSM: { type: 'number', default: 1 },
+    responsiveMD: { type: 'boolean', default: false },
+    slidesToShowMD: { type: 'number', default: 1 },
+    slidesToScrollMD: { type: 'number', default: 1 },
+    responsiveLG: { type: 'boolean', default: false },
+    slidesToShowLG: { type: 'number', default: 1 },
+    slidesToScrollLG: { type: 'number', default: 1 },
+    responsiveXL: { type: 'boolean', default: false },
+    slidesToShowXL: { type: 'number', default: 1 },
+    slidesToScrollXL: { type: 'number', default: 1 },
+	},
+
+
+/*=============================================================================*/
+/*                                    EDIT                                     */
+/*=============================================================================*/
+
+	edit(props) {
+
+    const att = props.attributes;
+    const [editMode, setEditMode] = useState(false);
+    const innerBlockCount = useSelect( ( select ) => select( 'core/block-editor' ).getBlocks( props.clientId ).length,  [ props.clientId ] );
+    if ( props.attributes.blockID != props.clientId ) props.setAttributes( { blockID: props.clientId } );
+    props.editMode = editMode;
+    props.toggleEditMode = function() { setEditMode(!editMode); };
+    props.setEditMode = (par) => { setEditMode(par); };
+
+    const allInnerBlocks = wp.data.select( 'core/block-editor' ).getBlocks( props.clientId );
+    let sliderHtml = "";
+    allInnerBlocks.forEach( el =>  sliderHtml += wp.blocks.getBlockContent( el ) );
+
+    const styleHtml = `
+      #html-gallery-`+att.blockID+` .k-blocks-slick-html-slide .k-blocks-slick-html-inner-content.row,
+      .slider-edit-`+att.blockID+` .k-blocks-slick-html-slide>div>.k-bs-grid>.block-editor-inner-blocks>.block-editor-block-list__layout,
+      .slider-edit-`+att.blockID+` .k-blocks-slick-html-slide>.k-bs-grid>.block-editor-inner-blocks>.block-editor-block-list__layout {
+        min-height: `+att.minHeight+`rem;
+      }
+    `;
+
+    const styleHtmlEdit = `
+      .slider-edit-`+att.blockID+`>div>.block-editor-block-list__layout {
+      	display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+      }
+      .slider-edit-`+att.blockID+`>div>div>.k-blocks-slick-html-slide-content.d-block {
+        flex: 0 0 calc( 95% / `+att.slidesToShow+` );
+        max-width: calc( 95% / `+att.slidesToShow+` );
+      }
+      .slider-edit-`+att.blockID+`>div>div>.block-list-appender.wp-block { width: 95%; }
+    `;
+
+		return (
+      <Fragment>
+
+        {/* BLOCK CONTROLS IMPORT */}
+
+        <ControlsSetParent propsObject={props} />
+
+        {/* EDIT RENDER
+        ========================================================================*/}
+
+        <div className={ "k-blocks-slick-html-parent backend "+att.className+" "+(editMode?"editmode":"viewmode" )+" "+controlClasses(props) }>
+
+          { !innerBlockCount && (
+            <Placeholder
+              icon={ BlockIcon }
+              className={ editMode ? "slick-placeholder-edit" : "" }
+              label="Add new slide"
+              style={ { minHeight: att.minHeight+'Rem', } }
+            />
+          ) }
+
+          { editMode && (
+            <Fragment>
+              <div className={"slider-edit-"+att.blockID}>
+                <InnerBlocks
+                  allowedBlocks={[ 'k-blocks-slick-html-child/k-blocks' ]}
+                  orientation={ att.slidesToShow!=1 ? "horizontal" : "vertiсal" } // horizontal/vertiсal
+                  renderAppender={ editMode ? () => <InnerBlocks.ButtonBlockAppender /> : false }
+                />
+              </div>
+              <style dangerouslySetInnerHTML={{ __html: styleHtml}} />
+              <style dangerouslySetInnerHTML={{ __html: styleHtmlEdit}} />
+            </Fragment>
+          ) }
+
+          { !editMode && (
+            <Fragment>
+              <div
+                className={ "hero-gallery"}
+                id={ "html-gallery-"+att.blockID }
+                dangerouslySetInnerHTML={{ __html: sliderHtml}}
+              />
+              <style dangerouslySetInnerHTML={{ __html: styleHtml}} />
+            </Fragment>
+          ) }
+
+        </div>
+
+
+      </Fragment>
+		);
+	},
+
+
+  /*===========================================================================*/
+  /*                                   SAVE                                    */
+  /*===========================================================================*/
+
+	save(props) {
+
+    const att = props.attributes;
+
+    var responsiveOptionsRaw = ``;
+    if ( props.attributes.responsiveSM ) {
+      responsiveOptionsRaw += `
+      {
+        breakpoint: 576,
+        settings: {
+          slidesToShow: `+props.attributes.slidesToShowSM+`,
+          slidesToScroll: `+props.attributes.slidesToScrollSM+`,
+        }
+      },`;
+    }
+    if ( props.attributes.responsiveMD ) {
+      responsiveOptionsRaw += `
+      {
+        breakpoint: 768,
+        settings: {
+          slidesToShow: `+props.attributes.slidesToShowMD+`,
+          slidesToScroll: `+props.attributes.slidesToScrollMD+`,
+        }
+      },`;
+    }
+    if ( props.attributes.responsiveLG ) {
+      responsiveOptionsRaw += `
+      {
+        breakpoint: 960,
+        settings: {
+          slidesToShow: `+props.attributes.slidesToShowLG+`,
+          slidesToScroll: `+props.attributes.slidesToScrollLG+`,
+        }
+      },`;
+    }
+    if ( props.attributes.responsiveXL ) {
+      responsiveOptionsRaw += `
+      {
+        breakpoint: 1140,
+        settings: {
+          slidesToShow: `+props.attributes.slidesToShowXL+`,
+          slidesToScroll: `+props.attributes.slidesToScrollXL+`,
+        }
+      },`;
+    }
+
+    const frontEndScript = `
+    jQuery(document).ready(function($) {
+      $("#html-gallery-`+att.blockID+`").slick({
+        slidesToShow: `+props.attributes.slidesToShow+`,
+        slidesToScroll: `+props.attributes.slidesToScroll+`,
+        arrows: `+props.attributes.arrows+`,
+        dots: `+props.attributes.dots+`,
+        infinite: `+props.attributes.infinite+`,
+        autoplay: `+props.attributes.autoplay+`,
+        fade: `+props.attributes.fade+`,
+        pauseOnHover: `+props.attributes.pauseOnHover+`,
+        adaptiveHeight: true,
+        responsive: [
+          `+responsiveOptionsRaw+`
+        ]
+      });
+    });`;
+
+    return (
+        <div className={ "k-blocks-slick-html-parent html-gallery "+controlClasses(props) } >
+          <div id={ "html-gallery-"+att.blockID }>
+            <InnerBlocks.Content />
+          </div>
+          <script dangerouslySetInnerHTML={{ __html: frontEndScript}} />
+          <style dangerouslySetInnerHTML={{ __html: "#html-gallery-"+att.blockID+" .k-blocks-slick-html-inner-content.row { min-height: "+att.minHeight+"rem }"}} />
+        </div>
+        ); },
+
+    } );
+
+
+
+
+    /*============================================================================*/
+    /*                             CHILD BLOCK BEGIN                              */
+    /*============================================================================*/
+
+    function addBlockClass(props) {  return ( props.attributes.className ? " "+props.attributes.className : "" )  };
+    function addCenterClass(props) {  return ( props.attributes.halign ? " "+props.attributes.halign : "" )  };
+    function addValignClass(props) {  return ( props.attributes.valign ? " "+props.attributes.valign : "" )  };
+    const ConditionalWrapper = ({ condition, wrapper, children }) => condition ? wrapper(children) : children;
+
+    registerBlockType( 'k-blocks-slick-html-child/k-blocks', {
+      title: __( 'Slide' ),
+    	icon: ChildBlockIcon,
+    	category: 'k-common-blocks',
+    	parent: [ 'k-blocks-slick-html-parent' ],
+    	supports: { html: false, className: true, anchor: true },
+    	attributes: {
+        className: { type: 'string', default: '' },
+        anchor: { type: 'string', default: '' },
+        /* positioning */
+        minHeight: { type: 'integer', default: 10 },
+        halign: { type: 'boolean', default: 'justify-content-center' },
+        valign: { type: 'string', default: 'align-items-center' },
+        noGutters: { type: 'boolean', default: true },
+        isSectionWide: { type: 'boolean', default: true },
+        /* color */
+        color: { type: 'string', default: 'inherit', },
+        bgColor: { type: 'string', default: 'transparent', },
+        bgGradient: { type: 'string', default: false, },
+        bgImage: { type: 'string' },
+        bgImageId: { type: 'integer', default: 0 },
+        bgImageType: { type: 'string', default: 'cover', },
+        bgImageFocal: { type: 'object', default: { x: '0.5', y: '0.5' } },
+    	},
+
+/*=============================================================================*/
+/*                                    EDIT                                     */
+/*=============================================================================*/
+
+	edit(props) {
+
+    const atts = props.attributes;
+    const innerBlockCount = useSelect( ( select ) => select( 'core/block-editor' ).getBlocks( props.clientId ).length,  [ props.clientId ] );
+
+		return (
+      <Fragment>
+
+        {/* BLOCK CONTROLS IMPORT */}
+
+        <ControlsSetChild propsObject={props} />
+
+        <div
+          className={ "k-blocks-slick-html-slide" }
+          style={ {
+            color: atts.color,
+            backgroundColor: atts.bgColor,
+            backgroundImage:
+            ( atts.bgGradient ? atts.bgGradient : 'none' ) + ',' +
+            ( atts.bgImage ? ( "url('"+atts.bgImage+"')" ) : 'none' ),
+            backgroundSize: ( (atts.bgImageType=='cover') ? 'auto, cover' : ( (atts.bgImageType=='cover') ? 'auto, contain' : 'auto, auto' ) ),
+            backgroundRepeat: ( (atts.bgImageType!='repeat') ? 'no-repeat,no-repeat' : 'no-repeat,repeat' ),
+            backgroundPosition: ( (atts.bgImageType!='repeat') ? ( 'center,'+(atts.bgImageFocal.x*100)+'% '+(atts.bgImageFocal.y*100)+'%' ) : 'center,center' ),
+          } }
+        >
+          <div class={ atts.isSectionWide ? "k-bs-slider-block-no-container" : "k-bs-slider-block-container container" } >
+            <div className={
+              "k-bs-grid g-0" + addBlockClass(props) + " grid-align-"+props.attributes.valign +
+              ( props.attributes.halign ? " has-"+props.attributes.halign : "" )
+            }>
+              <InnerBlocks
+                allowedBlocks={[ 'k-blocks-bs-grid-child/k-blocks' ]}
+                renderAppender={ false }
+                orientation="horizontal"
+              />
+            </div>
+          </div>
+        </div>
+
+      </Fragment>
+		);
+	},
+
+  /*===========================================================================*/
+  /*                                   SAVE                                    */
+  /*===========================================================================*/
+
+	save(props) {
+
+    const atts = props.attributes;
+    var addClass = (props.attributes.className) ? " "+props.attributes.className : "";
+    var guttersClass = (props.attributes.noGutters) ? " no-gutters" : "";
+
+    return (
+      <Fragment>
+        <div
+          className={ "k-blocks-slick-html-slide" + addBlockClass(props) }
+          style={ {
+            color: atts.color,
+            backgroundColor: atts.bgColor,
+            backgroundImage:
+            ( atts.bgGradient ? atts.bgGradient : 'none' ) + ',' +
+            ( atts.bgImage ? ( "url('"+atts.bgImage+"')" ) : 'none' ),
+            backgroundSize: ( (atts.bgImageType=='cover') ? 'auto, cover' : ( (atts.bgImageType=='cover') ? 'auto, contain' : 'auto, auto' ) ),
+            backgroundRepeat: ( (atts.bgImageType!='repeat') ? 'no-repeat,no-repeat' : 'no-repeat,repeat' ),
+            backgroundPosition: ( (atts.bgImageType!='repeat') ? ( 'center,'+(atts.bgImageFocal.x*100)+'% '+(atts.bgImageFocal.y*100)+'%' ) : 'center,center' ),
+          } }
+        >
+          <ConditionalWrapper
+            condition = {!(atts.isSectionWide)}
+            wrapper = { (children) => <div className={ "k-bs-slider-block-container container clearfix" } > {children} </div> }
+          >
+            <div className={ "k-blocks-slick-html-inner-content row g-0" + addCenterClass(props) + addValignClass(props) }>
+              <InnerBlocks.Content />
+            </div>
+          </ConditionalWrapper>
+        </div>
+      </Fragment>
+		);
+
+	},
+} );
+
+
+function controlClasses(props) {
+  const att = props.attributes;
+  const allClasses = [
+    att.arrowsColorClass, att.arrowsSizeClass, att.arrowsPositionClass, att.dotsColorClass, att.dotsSizeClass, att.dotsPositionClass
+  ];
+  return allClasses.filter(e => e !== '').join(' ');
+}

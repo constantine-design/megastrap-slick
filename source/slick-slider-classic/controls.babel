@@ -1,0 +1,439 @@
+/** @jsx wp.element.createElement */
+
+import { PannelUltimateBgControl } from '../common/PannelUltimateBgControl.js';
+
+export function Controls(args) {
+
+  /* definitions */
+
+  const props = args.propsObject;
+
+  const { __ } = wp.i18n;
+  const { MediaUpload, MediaUploadCheck, MediaPlaceholder, MediaReplaceFlow } = wp.blockEditor;
+  const { BlockVerticalAlignmentToolbar, BlockControls, InspectorControls, AlignmentToolbar } = wp.blockEditor;
+  const {
+    Button, ToolbarGroup, Toolbar, ToolbarButton, Dashicon, SVG, Path, PanelBody, PanelRow, SelectControl,
+    RangeControl, ToggleControl, Dropdown, CheckboxControl, FlexItem, Flex, ColorIndicator, ButtonGroup
+  } = wp.components;
+  const { useState, useEffect, Fragment } = wp.element;
+
+  /* functions */
+
+  const [prevent_start, set_prevent_start] = useState(false);
+  function stop() {
+    jQuery("#img-gallery-"+props.clientId).slick( 'unslick' );
+  }
+  function start() {
+    let responsiveOptions = [];
+    if ( props.attributes.responsiveSM ) responsiveOptions.push({
+      breakpoint: 576, settings: { slidesToShow: props.attributes.slidesToShowSM, slidesToScroll: props.attributes.slidesToScrollSM }
+    });
+    if ( props.attributes.responsiveMD ) responsiveOptions.push({
+      breakpoint: 768, settings: { slidesToShow: props.attributes.slidesToShowMD, slidesToScroll: props.attributes.slidesToScrollMD }
+    });
+    if ( props.attributes.responsiveLG ) responsiveOptions.push({
+      breakpoint: 960, settings: { slidesToShow: props.attributes.slidesToShowLG, slidesToScroll: props.attributes.slidesToScrollLG }
+    });
+    if ( props.attributes.responsiveXL ) responsiveOptions.push({
+      breakpoint: 1140, settings: { slidesToShow: props.attributes.slidesToShowXL, slidesToScroll: props.attributes.slidesToScrollXL }
+    });
+    jQuery("#img-gallery-"+props.clientId).not('.slick-initialized').slick({
+      slidesToShow: props.attributes.slidesToShow,
+      slidesToScroll: props.attributes.slidesToScroll,
+      arrows: props.attributes.arrows,
+      dots: props.attributes.dots,
+      infinite: props.attributes.infinite,
+      autoplay: props.attributes.autoplay,
+      centerMode: props.attributes.centerMode,
+      adaptiveHeight: props.attributes.adaptiveHeight,
+      variableWidth: props.attributes.variableWidth,
+      fade: props.attributes.fade,
+      responsive: responsiveOptions
+    });
+    jQuery(document).on('click', '#img-gallery-'+props.clientId+' [data-toggle="lightbox"]', function(event) {
+        event.preventDefault();
+        jQuery(this).ekkoLightbox();
+    });
+  }
+  useEffect(() => {
+    if (prevent_start!=true) start();
+  });
+
+  function mediaReplace(newcontent) {
+    set_prevent_start(true);
+    var ids=[], urls=[], thumbs=[], mds=[], lgs=[], captions=[], alts=[];
+    stop();
+    newcontent.forEach(function (newcontentItem) {
+      ids.push(newcontentItem.id);
+      urls.push(newcontentItem.url);
+      captions.push(newcontentItem.caption);
+      if (newcontentItem.sizes.hasOwnProperty('thumbnail')){
+        thumbs.push(newcontentItem.sizes.thumbnail.url);
+      } else {
+        thumbs.push(newcontentItem.url);
+      }
+      if (newcontentItem.sizes.hasOwnProperty('medium')){
+        mds.push(newcontentItem.sizes.medium.url);
+      } else {
+        mds.push(newcontentItem.url);
+      }
+      if (newcontentItem.sizes.hasOwnProperty('large')){
+        lgs.push(newcontentItem.sizes.large.url);
+      } else {
+        lgs.push(newcontentItem.url);
+      }
+      alts.push(newcontentItem.alt);
+    });
+    props.setAttributes( {
+      mediaID: ids,
+      mediaURL: urls,
+      mediaTHUMB: thumbs,
+      mediaMEDIUM: mds,
+      mediaLARGE: lgs,
+      mediaCAPTION: captions,
+      mediaALT: alts
+    } );
+    set_prevent_start(false);
+  }
+
+  function safelySetAttribute( attribute, newcontent ) {
+    set_prevent_start(true);
+    stop();
+    props.setAttributes( { [attribute]: newcontent } );
+    set_prevent_start(false);
+  }
+
+  /* output controls */
+
+  return (
+
+    <Fragment>
+
+      <BlockControls>
+        <ToolbarGroup>
+          <MediaUpload
+            multiple={'add'}
+            gallery={true}
+            value={ props.attributes.mediaID }
+            onSelect={ mediaReplace }
+            render={ ( { open } ) => (
+              <Button className="components-button components-toolbar-button" onClick={ open } > Edit Gallery </Button>
+            ) }
+          />
+        </ToolbarGroup>
+      </BlockControls>
+
+      <InspectorControls>
+        <PanelBody title={__('Style options')} initialOpen={ false }>
+          <SelectControl
+            label="Slider image size"
+            options={ [
+              { label: 'Thumbnail', value: 'THUMB' },
+              { label: 'Medium', value: 'MEDIUM' },
+              { label: 'Large', value: 'LARGE' },
+              { label: 'Full size', value: 'FULL' },
+            ] }
+            value={ props.attributes.sliderImageSize }
+            onChange={ (newcontent) => safelySetAttribute( 'sliderImageSize', newcontent )  }
+          />
+          {/*
+            <ToggleControl
+            label={__('Open Image In modal')}
+            checked={ props.attributes.openInModal }
+            onChange={ () => safelySetAttribute( 'openInModal', !props.attributes.openInModal )  }
+            />
+          */}
+          { props.attributes.openInModal && (
+            <SelectControl
+              label="Modal image size"
+              options={ [
+                { label: 'Thumbnail', value: 'THUMB' },
+                { label: 'Medium', value: 'MEDIUM' },
+                { label: 'Large', value: 'LARGE' },
+                { label: 'Full size', value: 'FULL' },
+              ] }
+              value={ props.attributes.modalImageSize }
+              onChange={ (newcontent) => safelySetAttribute( 'modalImageSize', newcontent )  }
+            />
+          )}
+          <ToggleControl
+            label={__('Show caption')}
+            checked={ props.attributes.showCaption }
+            onChange={ () => safelySetAttribute( 'showCaption', !props.attributes.showCaption )  }
+          />
+          <RangeControl
+            value={ props.attributes.slidePadding }
+            onChange={ ( newvalue ) => safelySetAttribute( 'slidePadding', newvalue ) }
+            min={ 0 }
+            max={ 5 }
+            step={ '0.1' }
+            label={ __('Margin beetweeen slides (0.1Rem)') }
+          />
+        </PanelBody>
+        <PanelBody title={__('Default full screen options')} >
+          <RangeControl
+            beforeIcon="columns"
+            label={__('Slides to show')}
+            value={ props.attributes.slidesToShow }
+            onChange={ (newcontent) => safelySetAttribute( 'slidesToShow', newcontent )  }
+            min={ 1 }
+            max={ 10 }
+          />
+          <RangeControl
+            beforeIcon="share-alt2"
+            label={__('Slides to scroll')}
+            value={ props.attributes.slidesToScroll }
+            onChange={ (newcontent) => safelySetAttribute( 'slidesToScroll', newcontent )  }
+            min={ 1 }
+            max={ 10 }
+          />
+          <ToggleControl
+            label={__('Arrows')}
+            checked={ props.attributes.arrows }
+            onChange={ () => safelySetAttribute( 'arrows', !props.attributes.arrows )  }
+          />
+          <ToggleControl
+            label={__('Dots')}
+            checked={ props.attributes.dots }
+            onChange={ () => safelySetAttribute( 'dots', !props.attributes.dots )  }
+          />
+          <ToggleControl
+            label={__('Infinite')}
+            checked={ props.attributes.infinite }
+            onChange={ () => safelySetAttribute( 'infinite', !props.attributes.infinite )  }
+          />
+          <ToggleControl
+            label={__('Autoplay')}
+            checked={ props.attributes.autoplay }
+            onChange={ () => safelySetAttribute( 'autoplay', !props.attributes.autoplay )  }
+          />
+          <ToggleControl
+            label={__('Center Mode')}
+            checked={ props.attributes.centerMode }
+            onChange={ () => safelySetAttribute( 'centerMode', !props.attributes.centerMode )  }
+          />
+          <ToggleControl
+            label={__('Adaptive Height')}
+            checked={ props.attributes.adaptiveHeight }
+            onChange={ () => safelySetAttribute( 'adaptiveHeight', !props.attributes.adaptiveHeight )  }
+          />
+          <ToggleControl
+            label={__('Variable Width')}
+            checked={ props.attributes.variableWidth }
+            onChange={ () => safelySetAttribute( 'variableWidth', !props.attributes.variableWidth )  }
+          />
+          <ToggleControl
+            label={__('Fade')}
+            checked={ props.attributes.fade }
+            onChange={ () => safelySetAttribute( 'fade', !props.attributes.fade )  }
+          />
+        </PanelBody>
+
+        <PanelBody title={__('Control style options')} initialOpen={ false }>
+          { props.attributes.arrows &&
+            <Fragment>
+              <Flex style = { { 'marginBottom': '1rem', 'marginTop': '0.5rem'  } }>
+                <FlexItem className="css-wdf2ti-Wrapper">
+                  <label className="k-sliderlabel">Arrows Color<ColorIndicator colorValue={ ( props.attributes.arrowsColorClass ? "#ffffff" : "#1e1e1e" )  } /></label>
+                </FlexItem>
+                <FlexItem>
+                  <ButtonGroup>
+                    <Button isSmall className={ props.attributes.arrowsColorClass==''?'is-primary':'' } onClick={ () => props.setAttributes({ arrowsColorClass: "" }) }>Dark</Button>
+                    <Button isSmall className={ props.attributes.arrowsColorClass=='light-arrows'?'is-primary':'' } onClick={ () => props.setAttributes({ arrowsColorClass: "light-arrows" }) }>Light</Button>
+                  </ButtonGroup>
+                </FlexItem>
+              </Flex>
+              <Flex style = { { 'marginBottom': '0.5rem'  } }>
+                <FlexItem className="css-wdf2ti-Wrapper">
+                  <label>Arrow Size</label>
+                </FlexItem>
+                <FlexItem>
+                  <SelectControl
+                    value={ props.attributes.arrowsSizeClass }
+                    options={ [
+                      { label: 'Big', value: 'big-arrows' },
+                      { label: 'Medium', value: '' },
+                      { label: 'Small', value: 'small-arrows' },
+                    ] }
+                    onChange={ ( size ) => props.setAttributes({ arrowsSizeClass: size }) }
+                  />
+                </FlexItem>
+              </Flex>
+              <Flex style = { { 'marginBottom': '2rem',  } }>
+                <FlexItem className="css-wdf2ti-Wrapper">
+                  <label>Arrow Position</label>
+                </FlexItem>
+                <FlexItem>
+                  <SelectControl
+                    value={ props.attributes.arrowsPositionClass }
+                    options={ [
+                      { label: 'Outside', value: 'arrows-outer' },
+                      { label: 'Inside', value: 'arrows-inner' },
+                      { label: 'Bottom', value: 'arrows-bottom' },
+                    ] }
+                    onChange={ ( pos ) => props.setAttributes({ arrowsPositionClass: pos }) }
+                  />
+                </FlexItem>
+              </Flex>
+            </Fragment>
+          }
+          { props.attributes.dots &&
+            <Fragment>
+              <Flex style = { { 'marginBottom': '1rem', 'marginTop': '0.5rem'  } }>
+                <FlexItem className="css-wdf2ti-Wrapper">
+                  <label className="k-sliderlabel">Dots Color<ColorIndicator colorValue={ ( props.attributes.dotsColorClass ? "#ffffff" : "#1e1e1e")  } /></label>
+                </FlexItem>
+                <FlexItem>
+                  <ButtonGroup>
+                    <Button isSmall className={ props.attributes.dotsColorClass==''?'is-primary':'' } onClick={ () => props.setAttributes({ dotsColorClass: "" }) }>Dark</Button>
+                    <Button isSmall className={ props.attributes.dotsColorClass=='light-dots'?'is-primary':'' } onClick={ () => props.setAttributes({ dotsColorClass: "light-dots" }) }>Light</Button>
+                  </ButtonGroup>
+                </FlexItem>
+              </Flex>
+              <Flex  style = { { 'marginBottom': '0.5rem'  } }>
+                <FlexItem className="css-wdf2ti-Wrapper">
+                  <label>Dots Size</label>
+                </FlexItem>
+                <FlexItem>
+                  <SelectControl
+                    value={ props.attributes.dotsSizeClass }
+                    options={ [
+                      { label: 'Big', value: 'big-dots' },
+                      { label: 'Medium', value: '' },
+                      { label: 'Small', value: 'small-dots' },
+                    ] }
+                    onChange={ ( size ) => props.setAttributes({ dotsSizeClass: size }) }
+                  />
+                </FlexItem>
+              </Flex>
+              <Flex style = { { 'marginBottom': '2rem',  } }>
+                <FlexItem className="css-wdf2ti-Wrapper">
+                  <label>Dots Position</label>
+                </FlexItem>
+                <FlexItem>
+                  <SelectControl
+                    value={ props.attributes.dotsPositionClass }
+                    options={ [
+                      { label: 'Outer', value: '' },
+                      { label: 'Inner', value: 'dots-inner' },
+                    ] }
+                    onChange={ ( pos ) => props.setAttributes({ dotsPositionClass: pos }) }
+                  />
+                </FlexItem>
+              </Flex>
+            </Fragment>
+          }
+        </PanelBody>
+
+        <PanelBody title={__('Responsive options')} initialOpen={ false }>
+          {/* small breakpoint */}
+          <CheckboxControl
+            label={__('Add breakpoint'+' SM')}
+            checked={ props.attributes.responsiveSM }
+            onChange={ () => safelySetAttribute( 'responsiveSM', !props.attributes.responsiveSM )  }
+          />
+          { props.attributes.responsiveSM && (
+            <Fragment>
+              <RangeControl
+                beforeIcon="columns"
+                label={__('Slides to show')}
+                value={ props.attributes.slidesToShowSM }
+                onChange={ (newcontent) => safelySetAttribute( 'slidesToShowSM', newcontent )  }
+                min={ 1 }
+                max={ 10 }
+              />
+              <RangeControl
+                beforeIcon="share-alt2"
+                label={__('Slides to scroll')}
+                value={ props.attributes.slidesToScrollSM }
+                onChange={ (newcontent) => safelySetAttribute( 'slidesToScrollSM', newcontent )  }
+                min={ 1 }
+                max={ 10 }
+              />
+            </Fragment>
+          )}
+          {/* medium breakpoint */}
+          <CheckboxControl
+            label={__('Add breakpoint'+' MD')}
+            checked={ props.attributes.responsiveMD }
+            onChange={ () => safelySetAttribute( 'responsiveMD', !props.attributes.responsiveMD )  }
+          />
+          { props.attributes.responsiveMD && (
+            <Fragment>
+              <RangeControl
+                beforeIcon="columns"
+                label={__('Slides to show')}
+                value={ props.attributes.slidesToShowMD }
+                onChange={ (newcontent) => safelySetAttribute( 'slidesToShowMD', newcontent )  }
+                min={ 1 }
+                max={ 10 }
+              />
+              <RangeControl
+                beforeIcon="share-alt2"
+                label={__('Slides to scroll')}
+                value={ props.attributes.slidesToScrollMD }
+                onChange={ (newcontent) => safelySetAttribute( 'slidesToScrollMD', newcontent )  }
+                min={ 1 }
+                max={ 10 }
+              />
+            </Fragment>
+          )}
+          {/* large breakpoint */}
+          <CheckboxControl
+              label={__('Add breakpoint'+' LG')}
+              checked={ props.attributes.responsiveLG }
+              onChange={ () => safelySetAttribute( 'responsiveLG', !props.attributes.responsiveLG )  }
+          />
+          { props.attributes.responsiveLG && (
+            <Fragment>
+              <RangeControl
+                beforeIcon="columns"
+                label={__('Slides to show')}
+                value={ props.attributes.slidesToShowLG }
+                onChange={ (newcontent) => safelySetAttribute( 'slidesToShowLG', newcontent )  }
+                min={ 1 }
+                max={ 10 }
+              />
+              <RangeControl
+                beforeIcon="share-alt2"
+                label={__('Slides to scroll')}
+                value={ props.attributes.slidesToScrollLG }
+                onChange={ (newcontent) => safelySetAttribute( 'slidesToScrollLG', newcontent )  }
+                min={ 1 }
+                max={ 10 }
+              />
+            </Fragment>
+          )}
+          {/* XL breakpoint */}
+          <CheckboxControl
+              label={__('Add breakpoint'+' XL')}
+              checked={ props.attributes.responsiveXL }
+              onChange={ () => safelySetAttribute( 'responsiveXL', !props.attributes.responsiveXL )  }
+          />
+          { props.attributes.responsiveXL && (
+            <Fragment>
+              <RangeControl
+                beforeIcon="columns"
+                label={__('Slides to show')}
+                value={ props.attributes.slidesToShowXL }
+                onChange={ (newcontent) => safelySetAttribute( 'slidesToShowXL', newcontent )  }
+                min={ 1 }
+                max={ 10 }
+              />
+              <RangeControl
+                beforeIcon="share-alt2"
+                label={__('Slides to scroll')}
+                value={ props.attributes.slidesToScrollXL }
+                onChange={ (newcontent) => safelySetAttribute( 'slidesToScrollXL', newcontent )  }
+                min={ 1 }
+                max={ 10 }
+              />
+            </Fragment>
+          )}
+        </PanelBody>
+      </InspectorControls>
+
+    </Fragment>
+  );
+
+}

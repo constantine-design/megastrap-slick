@@ -1,0 +1,284 @@
+/** @jsx wp.element.createElement */
+
+const { __ } = wp.i18n;
+const { registerBlockType } = wp.blocks;
+const { InnerBlocks, MediaUpload, MediaUploadCheck } = wp.blockEditor;
+const { BlockControls, InspectorControls } = wp.blockEditor;
+const { useState, useEffect, Fragment } = wp.element;
+const { Button } = wp.components;
+
+import { bootstrapValignClasses } from '../common/common-functions.js';
+import { PannelUltimateBgControl } from '../common/PannelUltimateBgControl.js';
+import { Controls } from './controls.js';
+
+//import { Slider }  from "../react-slick.min.js";
+
+
+const SectionBlockIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M20 2H0V5H20V2Z" fill="#C4C4C4"/>
+    <path d="M20 15H0V18H20V15Z" fill="#C4C4C4"/>
+    <path d="M5 7H1V13H5V7Z" fill="white" stroke="#3498DB" stroke-width="2"/>
+    <path d="M12 7H8V13H12V7Z" fill="white" stroke="#3498DB" stroke-width="2"/>
+    <path d="M19 7H15V13H19V7Z" fill="white" stroke="#3498DB" stroke-width="2"/>
+  </svg>
+)
+
+
+/*============================================================================*/
+/*                          Classik Slick Block Begin                         */
+/*============================================================================*/
+
+registerBlockType( 'k-blocks-sclick-slider-classic/k-blocks', {
+	title: __( 'Slic Slider Classic' ),
+	icon: SectionBlockIcon,
+	category: 'k-common-blocks',
+	//parent: [ 'core/post-content' ], // only root block
+	supports: { align: [ 'full' ], anchor: true, html : false},
+	attributes: {
+		align: {type: 'string', default: '', },
+		valign: { type: 'string', default: 'center', },
+    className: { type: 'string', default: '' },
+    anchor: { type: 'string', },
+    /* data */
+    mediaID: { type: 'array', default: [] },
+    mediaURL: { type: 'array', default: [] },
+    mediaTHUMB: { type: 'array', default: [] },
+    mediaMEDIUM: { type: 'array', default: [] },
+    mediaLARGE: { type: 'array', default: [] },
+    mediaCAPTION: { type: 'array', default: [] },
+    mediaALT: { type: 'array', default: [] },
+    blockID: { type: 'string', default: '' },
+    /* options */
+    slidesToShow: { type: 'number', default: 3 },
+    slidesToScroll: { type: 'number', default: 1 },
+    arrows: { type: 'boolean', default: true },
+    dots: { type: 'boolean', default: false },
+    infinite: { type: 'boolean', default: false },
+    autoplay: { type: 'boolean', default: false },
+    centerMode: { type: 'boolean', default: false },
+    adaptiveHeight: { type: 'boolean', default: false },
+    variableWidth: { type: 'boolean', default: false },
+    fade: { type: 'boolean', default: false },
+    sliderImageSize: { type: 'string', default: 'LARGE' },
+    openInModal: { type: 'boolean', default: false },
+    modalImageSize: { type: 'string', default: 'FULL' },
+    showCaption: { type: 'boolean', default: false },
+    /* responsive */
+    responsiveSM: { type: 'boolean', default: false },
+    slidesToShowSM: { type: 'number', default: 1 },
+    slidesToScrollSM: { type: 'number', default: 1 },
+    responsiveMD: { type: 'boolean', default: false },
+    slidesToShowMD: { type: 'number', default: 1 },
+    slidesToScrollMD: { type: 'number', default: 1 },
+    responsiveLG: { type: 'boolean', default: false },
+    slidesToShowLG: { type: 'number', default: 1 },
+    slidesToScrollLG: { type: 'number', default: 1 },
+    responsiveXL: { type: 'boolean', default: false },
+    slidesToShowXL: { type: 'number', default: 1 },
+    slidesToScrollXL: { type: 'number', default: 1 },
+    /* controlls classes */
+    arrowsColorClass: { type: 'string', default: '' },
+    arrowsSizeClass: { type: 'string', default: '' },
+    arrowsPositionClass: { type: 'string', default: '' },
+    dotsColorClass: { type: 'string', default: '' },
+    dotsSizeClass: { type: 'string', default: '' },
+    dotsPositionClass: { type: 'string', default: 'arrows-inner' },
+    slidePadding: { type: 'number', default: 0 },
+	},
+
+
+/*=============================================================================*/
+/*                                    EDIT                                     */
+/*=============================================================================*/
+
+	edit(props) {
+
+    if ( props.attributes.blockID != props.clientId ) props.setAttributes( { blockID: props.clientId } );
+
+    const dynamicStyle = `
+      .img-gallery-wrapper-`+props.attributes.blockID+` .slick-slide {
+        padding-left: `+(props.attributes.slidePadding/2)+`rem;
+        padding-right: `+(props.attributes.slidePadding/2)+`rem;
+      }
+      .img-gallery-wrapper-`+props.attributes.blockID+` .slick-slider {
+        padding-left: `+(props.attributes.slidePadding/2)+`rem;
+        padding-right: `+(props.attributes.slidePadding/2)+`rem;
+      }
+    `;
+
+		return (
+      <div className={ "img-gallery-wrapper-"+props.attributes.blockID+" "+props.attributes.className+" "+controlClasses(props) }>
+
+        {/* BLOCK CONTROLS IMPORT */}
+        <Controls propsObject={props} />
+
+        {/* PLACEHOLDER WHEN EMPTY */}
+        { props.attributes.mediaID==0 && (
+          <div className="components-placeholder is-large">
+            <div className="components-placeholder__label"> {__('Slick Slider Gallery')} </div>
+            <div className="components-placeholder__instructions">{__('Select gallery items by pressing "Edit Gallery" button.')}</div>
+          </div>
+        )}
+
+        {/* EDIT RENDER
+        ========================================================================*/}
+
+        <div
+          className={( props.attributes.arrows ? 'slick-arrows' : '' )}
+          id={"img-gallery-"+props.clientId} dangerouslySetInnerHTML={{ __html: sliderInnerContent(props,true) }}
+        />
+
+        <style dangerouslySetInnerHTML={{ __html: dynamicStyle}} />
+
+    </div>
+		);
+	},
+
+
+  /*===========================================================================*/
+  /*                                   SAVE                                    */
+  /*===========================================================================*/
+
+	save(props) {
+        var responsiveOptionsRaw = ``;
+        if ( props.attributes.responsiveSM ) {
+          responsiveOptionsRaw += `
+          {
+            breakpoint: 576,
+            settings: {
+              slidesToShow: `+props.attributes.slidesToShowSM+`,
+              slidesToScroll: `+props.attributes.slidesToScrollSM+`,
+            }
+          },`;
+        }
+        if ( props.attributes.responsiveMD ) {
+          responsiveOptionsRaw += `
+          {
+            breakpoint: 768,
+            settings: {
+              slidesToShow: `+props.attributes.slidesToShowMD+`,
+              slidesToScroll: `+props.attributes.slidesToScrollMD+`,
+            }
+          },`;
+        }
+        if ( props.attributes.responsiveLG ) {
+          responsiveOptionsRaw += `
+          {
+            breakpoint: 960,
+            settings: {
+              slidesToShow: `+props.attributes.slidesToShowLG+`,
+              slidesToScroll: `+props.attributes.slidesToScrollLG+`,
+            }
+          },`;
+        }
+        if ( props.attributes.responsiveXL ) {
+          responsiveOptionsRaw += `
+          {
+            breakpoint: 1140,
+            settings: {
+              slidesToShow: `+props.attributes.slidesToShowXL+`,
+              slidesToScroll: `+props.attributes.slidesToScrollXL+`,
+            }
+          },`;
+        }
+        const frontEndScript = `
+          jQuery(document).ready(function($) {
+            jQuery(document).on('click', '#img-gallery-`+props.attributes.blockID+` [data-toggle="lightbox"]', function(event) {
+                event.preventDefault();
+                jQuery(this).ekkoLightbox();
+            });
+            $('#img-gallery-`+props.attributes.blockID+`').not('.slick-initialized').slick({
+              slidesToShow: `+props.attributes.slidesToShow+`,
+              slidesToScroll: `+props.attributes.slidesToScroll+`,
+              arrows: `+props.attributes.arrows+`,
+              dots: `+props.attributes.dots+`,
+              infinite: `+props.attributes.infinite+`,
+              autoplay: `+props.attributes.autoplay+`,
+              centerMode: `+props.attributes.centerMode+`,
+              adaptiveHeight: `+props.attributes.adaptiveHeight+`,
+              variableWidth: `+props.attributes.variableWidth+`,
+              fade: `+props.attributes.fade+`,
+              responsive: [
+                `+responsiveOptionsRaw+`
+              ]
+            });
+          });
+        `;
+
+        const dynamicStyle = `
+          .img-gallery-wrapper-`+props.attributes.blockID+` .slick-slide {
+            padding-left: `+(props.attributes.slidePadding/2)+`rem;
+            padding-right: `+(props.attributes.slidePadding/2)+`rem;
+          }
+          .img-gallery-wrapper-`+props.attributes.blockID+` .slick-slider {
+            padding-left: `+(props.attributes.slidePadding/2)+`rem;
+            padding-right: `+(props.attributes.slidePadding/2)+`rem;
+          }
+        `;
+
+        return (
+
+          <div className={ "img-gallery-wrapper-"+props.attributes.blockID+" "+controlClasses(props) }>
+
+            <div
+              className={( props.attributes.arrows ? 'slick-arrows' : '' )}
+              id={"img-gallery-"+props.attributes.blockID} dangerouslySetInnerHTML={{ __html: sliderInnerContent(props) }}
+            />
+
+            <script dangerouslySetInnerHTML={{ __html: frontEndScript}} />
+
+            <style dangerouslySetInnerHTML={{ __html: dynamicStyle}} />
+
+         </div>
+		);
+
+	},
+} );
+
+
+/*===========================================================================*/
+/*                            SLIDE CONTENT OUTPUT                           */
+/*===========================================================================*/
+
+function sliderInnerContent(props, edit=false) {
+  let output = '';
+  for ( let i=0; i<props.attributes.mediaID.length; i++) {
+    output += '<div><figure class="k-block-slick-classic-item '+(props.attributes.showCaption ? 'with-caption' : 'no-caption')+'">';
+    let imgUrl = props.attributes.mediaTHUMB[i];
+    switch(props.attributes.sliderImageSize) {
+      case 'FULL': imgUrl = props.attributes.mediaURL[i]; break;
+      case 'MEDIUM': imgUrl = props.attributes.mediaMEDIUM[i]; break;
+      case 'LARGE': imgUrl = props.attributes.mediaLARGE[i]; break;
+    }
+    if (props.attributes.openInModal && !edit) {
+      let imgModalUrl = props.attributes.mediaURL[i];
+      switch(props.attributes.modalImageSize) {
+        case 'THUMB': imgModalUrl = props.attributes.mediaTHUMB[i]; break;
+        case 'MEDIUM': imgModalUrl = props.attributes.mediaMEDIUM[i]; break;
+        case 'LARGE': imgModalUrl = props.attributes.mediaLARGE[i]; break;
+      }
+      output += '<a href="'+imgModalUrl+'" data-toggle="lightbox" data-gallery="k-block-slider-gallery">';
+    }
+    output += '<img class="k-block-slick-classic-image" src="'+imgUrl+'" alt="'+props.attributes.mediaALT[i]+'">';
+    if (props.attributes.mediaCAPTION[i] && props.attributes.showCaption) {
+      output += '<figcaption class="k-block-slick-classic-caption">'+props.attributes.mediaCAPTION[i]+'</figcaption>';
+    }
+    if (props.attributes.openInModal && !edit) {
+      output += '</a>';
+    }
+    output += '</figure></div>';
+  }
+  return output;
+}
+
+
+
+
+function controlClasses(props) {
+  const att = props.attributes;
+  const allClasses = [
+    att.arrowsColorClass, att.arrowsSizeClass, att.arrowsPositionClass, att.dotsColorClass, att.dotsSizeClass, att.dotsPositionClass
+  ];
+  return allClasses.filter(e => e !== '').join(' ');
+}

@@ -1,0 +1,144 @@
+/** @jsx wp.element.createElement */
+
+import { PannelUltimateBgControl } from '../common/PannelUltimateBgControl.js';
+
+export function ControlsSetChild(args) {
+
+  /* definitions */
+
+  const props = args.propsObject;
+  const atts = args.propsObject.attributes;
+
+  const { __ } = wp.i18n;
+  const { MediaUpload, MediaUploadCheck, MediaPlaceholder, MediaReplaceFlow } = wp.blockEditor;
+  const { BlockVerticalAlignmentToolbar, BlockControls, InspectorControls, AlignmentToolbar } = wp.blockEditor;
+  const {
+    Button, ToolbarGroup, Toolbar, ToolbarButton, Dashicon, SVG, Path, PanelBody, PanelRow,
+    SelectControl, IconButton, DropdownMenu, MenuGroup, MenuItem, MenuItemsChoice
+  } = wp.components;
+  const { useState, useEffect, Fragment } = wp.element;
+  const { useSelect } = wp.data;
+
+  const SectionBlockButtonWide = () => (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="1" y="5" width="3" height="10" fill="#3498DB"/>
+      <rect x="16" y="5" width="3" height="10" fill="#3498DB"/>
+      <path d="M5 10L8.75 7.40192V12.5981L5 10Z" fill="#555555"/>
+      <path d="M15 10L11.25 12.5981L11.25 7.40192L15 10Z" fill="#555555"/>
+    </svg>
+  )
+  const SectionBlockButtonVertical = () => (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="3" y="11" width="2" height="14" transform="rotate(-90 3 11)" fill="#3498DB"/>
+      <path d="M10 17L7.40192 13.25H12.5981L10 17Z" fill="#555555"/>
+      <path d="M10 3L12.5981 6.75L7.40192 6.75L10 3Z" fill="#555555"/>
+    </svg>
+  )
+  const SectionBlockButtonHorizontal = () => (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="9" y="3" width="2" height="14" fill="#3498DB"/>
+      <path d="M17 10L13.25 12.5981V7.40192L17 10Z" fill="#555555"/>
+      <path d="M3 10L6.75 7.40192L6.75 12.5981L3 10Z" fill="#555555"/>
+    </svg>
+  )
+
+
+  const innerColumnsCount = useSelect( ( select ) => select( 'core/block-editor' ).getBlocks( props.clientId ).length,  [ props.clientId ] );
+
+  function addEmptyColumn() {
+    const block = wp.blocks.createBlock('k-blocks-bs-grid-child/k-blocks', { colMdBreakpoint: 6 });
+    wp.data.dispatch('core/block-editor').insertBlocks(block, innerColumnsCount, props.clientId);
+  }
+
+  /* output */
+
+  return (
+
+    <Fragment>
+
+      <BlockControls>
+        <Toolbar>
+          <ToolbarButton
+            icon={ SectionBlockButtonWide }
+            label={ __( "Make content conteiner full width" ) }
+            onClick = { () => { props.setAttributes( { isSectionWide: !atts.isSectionWide } ) } }
+            isActive = { !atts.isSectionWide }
+          />
+        </Toolbar>
+
+        <Toolbar>
+          <DropdownMenu icon={ SectionBlockButtonHorizontal } label="Select a direction">
+            { ( { onClose } ) => (
+              <MenuGroup label="Horizontal Align Colums">
+                <MenuItemsChoice
+                  choices={ [
+                    { value: 'justify-content-start', label: 'Start (default)', },
+                    { value: 'justify-content-center', label: 'Center', },
+                    { value: 'justify-content-end', label: 'End', },
+                    { value: 'justify-content-between', label: 'Beetween', },
+                    { value: 'justify-content-around', label: 'Around', },
+                  ] }
+                  value={ props.attributes.halign }
+                  onSelect={ ( mode ) => props.setAttributes( { halign: mode } ) }
+
+                />
+              </MenuGroup>
+            ) }
+          </DropdownMenu>
+        </Toolbar>
+        <Toolbar>
+          <DropdownMenu icon={ SectionBlockButtonVertical } label="Select a direction">
+            { ( { onClose } ) => (
+              <MenuGroup label="Vertical Align Colums">
+                <MenuItemsChoice
+                  choices={ [
+                    { value: 'align-items-stretch', label: 'Stretch (default)', },
+                    { value: 'align-items-start', label: 'Top', },
+                    { value: 'align-items-center', label: 'Center', },
+                    { value: 'align-items-end', label: 'Bottom', },
+                  ] }
+                  value={ props.attributes.valign }
+                  onSelect={ ( mode ) => props.setAttributes( { valign: mode } ) }
+
+                />
+              </MenuGroup>
+            ) }
+          </DropdownMenu>
+        </Toolbar>
+        <Toolbar>
+          <ToolbarButton
+            icon='plus-alt2'
+            title='Add new column'
+            onClick={ addEmptyColumn }
+          />
+        </Toolbar>
+      </BlockControls>
+
+      <InspectorControls>
+        <PannelUltimateBgControl
+          // first toolbar: color block
+          colorValue={ atts.color }
+          onColorChange={ ( newVal ) => props.setAttributes({ color: newVal }) }
+          bgColorValue={ atts.bgColor }
+          onBgColorChange={ ( newVal ) => props.setAttributes({ bgColor: newVal }) }
+          // second toolbar: image block
+          bgImgUrlValue={ atts.bgImage }
+          bgImgIdValue={ atts.bgImageId }
+          onBgImgSelect={ ( newVal ) => props.setAttributes({ bgImage: newVal.url, bgImageId: newVal.id }) }
+          onSetDefaultClick={ () => props.setAttributes({ bgImage: "none", bgImageId: 0 }) }
+          // bg focal for second toolbar: optional
+          bgFocalValue={ atts.bgImageFocal }
+          onBgImageFocalChange={ ( newVal ) => props.setAttributes({ bgImageFocal: newVal }) }
+          // bg style for second toolbar: optional
+          bgStyleValue={ atts.bgImageType }
+          onBgStyleChange={ ( newVal ) => props.setAttributes({ bgImageType: newVal }) }
+          // third toolbar: gradient overlay block
+          gradientOvelayValue={ atts.bgGradient }
+          onGradientOverlayChange={ ( newVal ) => props.setAttributes({ bgGradient: newVal }) }
+        />
+      </InspectorControls>
+
+    </Fragment>
+  );
+
+}
