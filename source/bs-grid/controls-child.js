@@ -7,8 +7,6 @@ exports.ControlsChild = ControlsChild;
 
 var _PannelUltimateBgControl = require('../common/PannelUltimateBgControl.js');
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; } /** @jsx wp.element.createElement */
-
 function ControlsChild(args) {
 
   /* definitions */
@@ -50,38 +48,6 @@ function ControlsChild(args) {
       useEffect = _wp$element.useEffect,
       Fragment = _wp$element.Fragment;
 
-
-  function BsBreakPoint(args) {
-    var propName = args.attributeName;
-    return wp.element.createElement(
-      Flex,
-      { style: { paddingLeft: '0.8rem', paddingRight: '0.8rem' } },
-      wp.element.createElement(
-        FlexItem,
-        { style: { paddingTop: '0.5rem', paddingBottom: '0.5rem' } },
-        wp.element.createElement(CheckboxControl, {
-          label: args.label,
-          checked: Boolean(props.attributes[propName]),
-          onChange: function onChange(newvalue) {
-            if (Boolean(props.attributes[propName])) props.setAttributes(_defineProperty({}, propName, 0));else props.setAttributes(_defineProperty({}, propName, 6));
-          }
-        })
-      ),
-      wp.element.createElement(
-        FlexBlock,
-        null,
-        Boolean(props.attributes[propName]) && wp.element.createElement(RangeControl, {
-          value: props.attributes[propName],
-          onChange: function onChange(newvalue) {
-            return props.setAttributes(_defineProperty({}, propName, newvalue));
-          },
-          min: 1,
-          max: 12
-        })
-      )
-    );
-  }
-
   /* output */
 
   return wp.element.createElement(
@@ -93,15 +59,120 @@ function ControlsChild(args) {
       null,
       wp.element.createElement(
         PanelBody,
-        { title: __('Grid') },
+        { title: __('Breakpoints') },
         wp.element.createElement(
           'div',
           { className: 'k-bs-grid-cols-controls' },
-          wp.element.createElement(BsBreakPoint, { attributeName: 'colBreakpoint', label: 'XS' }),
-          wp.element.createElement(BsBreakPoint, { attributeName: 'colSmBreakpoint', label: 'SM' }),
-          wp.element.createElement(BsBreakPoint, { attributeName: 'colMdBreakpoint', label: 'MD' }),
-          wp.element.createElement(BsBreakPoint, { attributeName: 'colLgBreakpoint', label: 'LG' }),
-          wp.element.createElement(BsBreakPoint, { attributeName: 'colXlBreakpoint', label: 'XL' })
+          wp.element.createElement(
+            Flex,
+            { style: { paddingLeft: '0.8rem', paddingRight: '0.8rem' } },
+            wp.element.createElement(
+              FlexItem,
+              { className: 'k-bs-grid-cols-selector', style: { paddingTop: '0.6rem', paddingBottom: '0.6rem' } },
+              wp.element.createElement(CheckboxControl, { label: __('Def'), checked: Boolean(atts.colBreakpoint),
+                onChange: function onChange() {
+                  if (Boolean(atts.colBreakpoint)) props.setAttributes({ colBreakpoint: 0 });else props.setAttributes({ colBreakpoint: 6 });
+                }
+              })
+            ),
+            wp.element.createElement(
+              FlexBlock,
+              { className: 'k-bs-grid-cols-range' },
+              Boolean(atts.colBreakpoint) && wp.element.createElement(RangeControl, { value: atts.colBreakpoint, min: 1, max: 12,
+                onChange: function onChange(newvalue) {
+                  return props.setAttributes({ colBreakpoint: newvalue });
+                }
+              })
+            )
+          ),
+          wp.element.createElement(
+            Flex,
+            { style: { paddingLeft: '0.8rem', paddingRight: '0.8rem' } },
+            wp.element.createElement(
+              FlexItem,
+              { className: 'k-bs-grid-cols-selector', style: { paddingTop: '0.6rem', paddingBottom: '0.6rem' } },
+              wp.element.createElement(CheckboxControl, { label: "SM", checked: Boolean(atts.colSmBreakpoint),
+                onChange: function onChange() {
+                  if (Boolean(atts.colSmBreakpoint)) props.setAttributes({ colSmBreakpoint: 0 });else props.setAttributes({ colSmBreakpoint: 6 });
+                }
+              })
+            ),
+            wp.element.createElement(
+              FlexBlock,
+              { className: 'k-bs-grid-cols-range' },
+              Boolean(atts.colSmBreakpoint) && wp.element.createElement(RangeControl, { value: atts.colSmBreakpoint, min: 1, max: 12,
+                onChange: function onChange(newvalue) {
+                  return props.setAttributes({ colSmBreakpoint: newvalue });
+                }
+              })
+            )
+          ),
+          wp.element.createElement(
+            Flex,
+            { style: { paddingLeft: '0.8rem', paddingRight: '0.8rem' } },
+            wp.element.createElement(
+              FlexItem,
+              { className: 'k-bs-grid-cols-selector', style: { paddingTop: '0.6rem', paddingBottom: '0.6rem' } },
+              wp.element.createElement(CheckboxControl, { label: "MD", checked: Boolean(atts.colMdBreakpoint),
+                onChange: function onChange() {
+                  if (Boolean(atts.colMdBreakpoint)) props.setAttributes({ colMdBreakpoint: 0 });else props.setAttributes({ colMdBreakpoint: 6 });
+                }
+              })
+            ),
+            wp.element.createElement(
+              FlexBlock,
+              { className: 'k-bs-grid-cols-range' },
+              Boolean(atts.colMdBreakpoint) && wp.element.createElement(RangeControl, { value: atts.colMdBreakpoint, min: 1, max: 12,
+                onChange: function onChange(newvalue) {
+                  return props.setAttributes({ colMdBreakpoint: newvalue });
+                }
+              })
+            )
+          ),
+          wp.element.createElement(
+            Flex,
+            { style: { paddingLeft: '0.8rem', paddingRight: '0.8rem' } },
+            wp.element.createElement(
+              FlexItem,
+              { className: 'k-bs-grid-cols-selector', style: { paddingTop: '0.6rem', paddingBottom: '0.6rem' } },
+              wp.element.createElement(CheckboxControl, { label: "LG", checked: Boolean(atts.colLgBreakpoint),
+                onChange: function onChange() {
+                  if (Boolean(atts.colLgBreakpoint)) props.setAttributes({ colLgBreakpoint: 0 });else props.setAttributes({ colLgBreakpoint: 6 });
+                }
+              })
+            ),
+            wp.element.createElement(
+              FlexBlock,
+              { className: 'k-bs-grid-cols-range' },
+              Boolean(atts.colLgBreakpoint) && wp.element.createElement(RangeControl, { value: atts.colLgBreakpoint, min: 1, max: 12,
+                onChange: function onChange(newvalue) {
+                  return props.setAttributes({ colLgBreakpoint: newvalue });
+                }
+              })
+            )
+          ),
+          wp.element.createElement(
+            Flex,
+            { style: { paddingLeft: '0.8rem', paddingRight: '0.8rem' } },
+            wp.element.createElement(
+              FlexItem,
+              { className: 'k-bs-grid-cols-selector', style: { paddingTop: '0.6rem', paddingBottom: '0.6rem' } },
+              wp.element.createElement(CheckboxControl, { label: "XL", checked: Boolean(atts.colXlBreakpoint),
+                onChange: function onChange() {
+                  if (Boolean(atts.colXlBreakpoint)) props.setAttributes({ colXlBreakpoint: 0 });else props.setAttributes({ colXlBreakpoint: 6 });
+                }
+              })
+            ),
+            wp.element.createElement(
+              FlexBlock,
+              { className: 'k-bs-grid-cols-range' },
+              Boolean(atts.colXlBreakpoint) && wp.element.createElement(RangeControl, { value: atts.colXlBreakpoint, min: 1, max: 12,
+                onChange: function onChange(newvalue) {
+                  return props.setAttributes({ colXlBreakpoint: newvalue });
+                }
+              })
+            )
+          )
         )
       ),
       wp.element.createElement(_PannelUltimateBgControl.PannelUltimateBgControl
@@ -141,5 +212,5 @@ function ControlsChild(args) {
       })
     )
   );
-}
+} /** @jsx wp.element.createElement */
 //# sourceMappingURL=controls-child.js.map

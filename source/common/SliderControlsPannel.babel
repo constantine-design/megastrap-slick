@@ -1,0 +1,152 @@
+export function SliderControlsPannel({
+  arrows, arrowsColorClass, setArrowsColorClass, arrowsSizeClass, setArrowsSizeClass, arrowsPositionClass, setArrowsPositionClass,
+  dots, dotsColorClass, setDotsColorClass, dotsSizeClass, setDotsSizeClass, dotsPositionClass, setDotsPositionClass,
+  isControlsCustom, setIsControlsCustom
+}) {
+
+  const { __ } = wp.i18n;
+  const {
+    Button, ButtonGroup, ToolbarGroup, Toolbar, ToolbarButton, Dashicon, SVG, Path, PanelBody, PanelRow, SelectControl, ColorIndicator,
+    RangeControl, Flex, FlexItem, FlexBlock, Icon, CheckboxControl, Notice, ToggleControl, __experimentalRadioGroup, __experimentalRadio,
+  } = wp.components;
+    const { Fragment } = wp.element;
+
+  return (
+    <PanelBody title={__('Control style options')} initialOpen={ false }>
+
+      { arrows && !isControlsCustom &&
+        <Fragment>
+          <Flex style = { { 'marginBottom': '1rem', 'marginTop': '8px'  } }>
+            <FlexItem>
+              <label className="k-sliderlabel">
+                <span className="k-sliderlabel-text">Arrows Color</span>
+                <ColorIndicator colorValue={ ( arrowsColorClass ? "#ffffff" : "#1e1e1e" )  } />
+              </label>
+            </FlexItem>
+            <FlexItem>
+              <ButtonGroup>
+                <Button isSmall className={ arrowsColorClass==''?'is-primary':'' } onClick={ () => setArrowsColorClass("") }>Dark</Button>
+                <Button isSmall className={ arrowsColorClass=='light-arrows'?'is-primary':'' } onClick={ () => setArrowsColorClass("light-arrows") }>Light</Button>
+              </ButtonGroup>
+            </FlexItem>
+          </Flex>
+          <Flex style = { { 'marginBottom': '8px'  } }>
+            <FlexItem>
+              <label>Arrow Size</label>
+            </FlexItem>
+            <FlexItem style={{ width: '78px' }}>
+              <SelectControl
+                value={ arrowsSizeClass }
+                options={ [
+                  { label: 'Big', value: 'big-arrows' },
+                  { label: 'Medium', value: '' },
+                  { label: 'Small', value: 'small-arrows' },
+                ] }
+                onChange={ ( size ) => setArrowsSizeClass( size ) }
+              />
+            </FlexItem>
+          </Flex>
+          <Flex style = { { 'marginBottom': '24px',  } }>
+            <FlexItem>
+              <label>Arrow Position</label>
+            </FlexItem>
+            <FlexItem  style={{ width: '78px' }}>
+              <SelectControl
+                value={ arrowsPositionClass }
+                options={ [
+                  { label: 'Outside', value: 'arrows-outer' },
+                  { label: 'Inside', value: 'arrows-inner' },
+                  { label: 'Bottom', value: 'arrows-bottom' },
+                ] }
+                onChange={ ( pos ) => setArrowsPositionClass( pos ) }
+              />
+            </FlexItem>
+          </Flex>
+        </Fragment>
+      }
+
+      { dots && !isControlsCustom &&
+        <Fragment>
+          <Flex style = { { 'marginBottom': '1rem', 'marginTop': '8px'  } }>
+            <FlexItem>
+              <label className="k-sliderlabel">
+                <span className="k-sliderlabel-text">Dots Color</span>
+                <ColorIndicator colorValue={ ( dotsColorClass ? "#ffffff" : "#1e1e1e")  } />
+              </label>
+            </FlexItem>
+            <FlexItem>
+              <ButtonGroup>
+                <Button isSmall className={ dotsColorClass==''?'is-primary':'' } onClick={ () => setDotsColorClass("") }>Dark</Button>
+                <Button isSmall className={ dotsColorClass=='light-dots'?'is-primary':'' } onClick={ () => setDotsColorClass("light-dots") }>Light</Button>
+              </ButtonGroup>
+            </FlexItem>
+          </Flex>
+          <Flex  style = { { 'marginBottom': '8px'  } }>
+            <FlexItem>
+              <label>Dots Size</label>
+            </FlexItem>
+            <FlexItem style={{ width: '78px' }}>
+              <SelectControl
+                value={ dotsSizeClass }
+                options={ [
+                  { label: 'Big', value: 'big-dots' },
+                  { label: 'Medium', value: '' },
+                  { label: 'Small', value: 'small-dots' },
+                ] }
+                onChange={ ( size ) => setDotsSizeClass(size) }
+              />
+            </FlexItem>
+          </Flex>
+          <Flex style = { { 'marginBottom': '18px',  } }>
+            <FlexItem className="css-wdf2ti-Wrapper">
+              <label>Dots Position</label>
+            </FlexItem>
+            <FlexItem style={{ width: '78px' }}>
+              <SelectControl
+                value={ dotsPositionClass }
+                options={ [
+                  { label: 'Outer', value: '' },
+                  { label: 'Inner', value: 'dots-inner' },
+                ] }
+                onChange={ ( pos ) => setDotsPositionClass(pos) }
+              />
+            </FlexItem>
+          </Flex>
+        </Fragment>
+      }
+      { (dots || arrows) &&
+        <Fragment>
+          { isControlsCustom &&
+            <div className="k-slider-custom-controls">
+              <SelectControl
+                value={ isControlsCustom }
+                options={ [
+                  { label: 'Custom style 1', value: 'custom-controls-1' },
+                  { label: 'Custom style 2', value: 'custom-controls-2' },
+                  { label: 'Custom style 3', value: 'custom-controls-3' },
+                ] }
+                onChange={ ( pos ) => setIsControlsCustom(pos) }
+              />
+              <Notice status="warning" isDismissible={false}>
+                <p>
+                  <p><u>Use folowing CSS for styling:</u></p>
+                  <div style={{ fontSize: '12px' }}>
+                    <p><b>.{isControlsCustom} .slick-next/.slick-prev</b> - arrows position</p>
+                    <p><b>.{isControlsCustom} .slick-next:before/.slick-prev:before</b> - arrows content</p>
+                    <p><b>.{isControlsCustom} .slick-dots li button</b> - dots position</p>
+                    <p><b>.{isControlsCustom} .slick-dots li button:before</b> - dots content</p>
+                  </div>
+                </p>
+              </Notice>
+            </div>
+          }
+          <CheckboxControl
+            label="Custom slider controls"
+            checked={ isControlsCustom }
+            onChange={ () => { if (isControlsCustom) setIsControlsCustom(''); else setIsControlsCustom("custom-controls-1"); } }
+          />
+        </Fragment>
+      }
+    </PanelBody>
+  );
+}

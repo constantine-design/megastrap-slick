@@ -1,6 +1,7 @@
 /** @jsx wp.element.createElement */
 
 import { PannelUltimateBgControl } from '../common/PannelUltimateBgControl.js';
+import { SliderControlsPannel } from '../common/SliderControlsPannel.js';
 
 export function Controls(args) {
 
@@ -117,7 +118,7 @@ export function Controls(args) {
             value={ props.attributes.mediaID }
             onSelect={ mediaReplace }
             render={ ( { open } ) => (
-              <Button className="components-button components-toolbar-button" onClick={ open } > Edit Gallery </Button>
+              <ToolbarButton icon="images-alt2" onClick={ open } >{ __('Edit Slides') }</ToolbarButton>
             ) }
           />
         </ToolbarGroup>
@@ -229,101 +230,26 @@ export function Controls(args) {
           />
         </PanelBody>
 
-        <PanelBody title={__('Control style options')} initialOpen={ false }>
-          { props.attributes.arrows &&
-            <Fragment>
-              <Flex style = { { 'marginBottom': '1rem', 'marginTop': '0.5rem'  } }>
-                <FlexItem className="css-wdf2ti-Wrapper">
-                  <label className="k-sliderlabel">Arrows Color<ColorIndicator colorValue={ ( props.attributes.arrowsColorClass ? "#ffffff" : "#1e1e1e" )  } /></label>
-                </FlexItem>
-                <FlexItem>
-                  <ButtonGroup>
-                    <Button isSmall className={ props.attributes.arrowsColorClass==''?'is-primary':'' } onClick={ () => props.setAttributes({ arrowsColorClass: "" }) }>Dark</Button>
-                    <Button isSmall className={ props.attributes.arrowsColorClass=='light-arrows'?'is-primary':'' } onClick={ () => props.setAttributes({ arrowsColorClass: "light-arrows" }) }>Light</Button>
-                  </ButtonGroup>
-                </FlexItem>
-              </Flex>
-              <Flex style = { { 'marginBottom': '0.5rem'  } }>
-                <FlexItem className="css-wdf2ti-Wrapper">
-                  <label>Arrow Size</label>
-                </FlexItem>
-                <FlexItem>
-                  <SelectControl
-                    value={ props.attributes.arrowsSizeClass }
-                    options={ [
-                      { label: 'Big', value: 'big-arrows' },
-                      { label: 'Medium', value: '' },
-                      { label: 'Small', value: 'small-arrows' },
-                    ] }
-                    onChange={ ( size ) => props.setAttributes({ arrowsSizeClass: size }) }
-                  />
-                </FlexItem>
-              </Flex>
-              <Flex style = { { 'marginBottom': '2rem',  } }>
-                <FlexItem className="css-wdf2ti-Wrapper">
-                  <label>Arrow Position</label>
-                </FlexItem>
-                <FlexItem>
-                  <SelectControl
-                    value={ props.attributes.arrowsPositionClass }
-                    options={ [
-                      { label: 'Outside', value: 'arrows-outer' },
-                      { label: 'Inside', value: 'arrows-inner' },
-                      { label: 'Bottom', value: 'arrows-bottom' },
-                    ] }
-                    onChange={ ( pos ) => props.setAttributes({ arrowsPositionClass: pos }) }
-                  />
-                </FlexItem>
-              </Flex>
-            </Fragment>
-          }
-          { props.attributes.dots &&
-            <Fragment>
-              <Flex style = { { 'marginBottom': '1rem', 'marginTop': '0.5rem'  } }>
-                <FlexItem className="css-wdf2ti-Wrapper">
-                  <label className="k-sliderlabel">Dots Color<ColorIndicator colorValue={ ( props.attributes.dotsColorClass ? "#ffffff" : "#1e1e1e")  } /></label>
-                </FlexItem>
-                <FlexItem>
-                  <ButtonGroup>
-                    <Button isSmall className={ props.attributes.dotsColorClass==''?'is-primary':'' } onClick={ () => props.setAttributes({ dotsColorClass: "" }) }>Dark</Button>
-                    <Button isSmall className={ props.attributes.dotsColorClass=='light-dots'?'is-primary':'' } onClick={ () => props.setAttributes({ dotsColorClass: "light-dots" }) }>Light</Button>
-                  </ButtonGroup>
-                </FlexItem>
-              </Flex>
-              <Flex  style = { { 'marginBottom': '0.5rem'  } }>
-                <FlexItem className="css-wdf2ti-Wrapper">
-                  <label>Dots Size</label>
-                </FlexItem>
-                <FlexItem>
-                  <SelectControl
-                    value={ props.attributes.dotsSizeClass }
-                    options={ [
-                      { label: 'Big', value: 'big-dots' },
-                      { label: 'Medium', value: '' },
-                      { label: 'Small', value: 'small-dots' },
-                    ] }
-                    onChange={ ( size ) => props.setAttributes({ dotsSizeClass: size }) }
-                  />
-                </FlexItem>
-              </Flex>
-              <Flex style = { { 'marginBottom': '2rem',  } }>
-                <FlexItem className="css-wdf2ti-Wrapper">
-                  <label>Dots Position</label>
-                </FlexItem>
-                <FlexItem>
-                  <SelectControl
-                    value={ props.attributes.dotsPositionClass }
-                    options={ [
-                      { label: 'Outer', value: '' },
-                      { label: 'Inner', value: 'dots-inner' },
-                    ] }
-                    onChange={ ( pos ) => props.setAttributes({ dotsPositionClass: pos }) }
-                  />
-                </FlexItem>
-              </Flex>
-            </Fragment>
-          }
-        </PanelBody>
+
+        <SliderControlsPannel
+          arrows={ props.attributes.arrows }
+          arrowsColorClass={ props.attributes.arrowsColorClass }
+          setArrowsColorClass={ (val) => props.setAttributes({ arrowsColorClass: val }) }
+          arrowsSizeClass={ props.attributes.arrowsSizeClass }
+          setArrowsSizeClass={ (size) => props.setAttributes({ arrowsSizeClass: size }) }
+          arrowsPositionClass={ props.attributes.arrowsPositionClass }
+          setArrowsPositionClass={ ( pos ) => props.setAttributes({ arrowsPositionClass: pos }) }
+          dots={ props.attributes.dots }
+          dotsColorClass={ props.attributes.dotsColorClass }
+          setDotsColorClass={ (val) => props.setAttributes({ dotsColorClass: val }) }
+          dotsSizeClass={ props.attributes.dotsSizeClass }
+          setDotsSizeClass={ (size) => props.setAttributes({ dotsSizeClass: size }) }
+          dotsPositionClass={ props.attributes.dotsPositionClass }
+          setDotsPositionClass={ ( pos ) => props.setAttributes({ dotsPositionClass: pos }) }
+          isControlsCustom={ props.attributes.isControlsCustom }
+          setIsControlsCustom={ (val) => props.setAttributes({ isControlsCustom: val }) }
+        />
+
 
         <PanelBody title={__('Responsive options')} initialOpen={ false }>
           {/* small breakpoint */}

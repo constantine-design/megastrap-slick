@@ -17,11 +17,11 @@ import { ControlsSetChild } from './controls-child.js';
 const BlockIcon = () => (
   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M7 6H1V12H7V6Z" fill="white" stroke="#3498DB" stroke-width="2"/>
-  <path d="M20 5H9V7H20V5Z" fill="#C4C4C4"/>
-  <path d="M20 11H9V13H20V11Z" fill="#C4C4C4"/>
-  <path d="M20 8H9V10H20V8Z" fill="#C4C4C4"/>
-  <path d="M14 16L11 17.7321V14.2679L14 16Z" fill="#1E1E1E"/>
-  <path d="M6 16L9 14.2679V17.7321L6 16Z" fill="#1E1E1E"/>
+    <path d="M20 5H9V7H20V5Z" fill="#C4C4C4"/>
+    <path d="M20 11H9V13H20V11Z" fill="#C4C4C4"/>
+    <path d="M20 8H9V10H20V8Z" fill="#C4C4C4"/>
+    <path d="M14 16L11 17.7321V14.2679L14 16Z" fill="#1E1E1E"/>
+    <path d="M6 16L9 14.2679V17.7321L6 16Z" fill="#1E1E1E"/>
   </svg>
 )
 const ChildBlockIcon = () => (
@@ -72,6 +72,7 @@ registerBlockType( 'k-blocks-slick-html-parent/k-blocks', {
     autoplay: { type: 'boolean', default: false },
     fade: { type: 'boolean', default: false },
     pauseOnHover: { type: 'boolean', default: false },
+    /* controls */
     arrowsColorClass: { type: 'string', default: '' },
     arrowsSizeClass: { type: 'string', default: '' },
     arrowsPositionClass: { type: 'string', default: '' },
@@ -81,6 +82,7 @@ registerBlockType( 'k-blocks-slick-html-parent/k-blocks', {
     centerMode: { type: 'boolean', default: false },
     adaptiveHeight: { type: 'boolean', default: false },
     variableWidth: { type: 'boolean', default: false },
+    isControlsCustom: { type: 'string', default: '' },
     /* responsive */
     responsiveSM: { type: 'boolean', default: false },
     slidesToShowSM: { type: 'number', default: 1 },
@@ -345,6 +347,7 @@ registerBlockType( 'k-blocks-slick-html-parent/k-blocks', {
                 allowedBlocks={[ 'k-blocks-bs-grid-child/k-blocks' ]}
                 renderAppender={ false }
                 orientation="horizontal"
+                template={ [ ['k-blocks-bs-grid-child/k-blocks',{} ] ]}
               />
             </div>
           </div>
@@ -397,8 +400,13 @@ registerBlockType( 'k-blocks-slick-html-parent/k-blocks', {
 
 function controlClasses(props) {
   const att = props.attributes;
-  const allClasses = [
-    att.arrowsColorClass, att.arrowsSizeClass, att.arrowsPositionClass, att.dotsColorClass, att.dotsSizeClass, att.dotsPositionClass
-  ];
+  let allClasses;
+  if (!att.isControlsCustom)  {
+    allClasses = [ att.arrowsColorClass, att.arrowsSizeClass, att.arrowsPositionClass, att.dotsColorClass, att.dotsSizeClass, att.dotsPositionClass ];
+  } else {
+    allClasses = [ 'custom-controls', att.isControlsCustom ];
+  }
+  if (att.arrows) allClasses.push('has-arrows');
+  if (att.dots) allClasses.push('has-dots');
   return allClasses.filter(e => e !== '').join(' ');
 }

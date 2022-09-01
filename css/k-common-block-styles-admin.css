@@ -2,11 +2,17 @@
 /* ------------------------------------ */
 /*          html-slider styles          */
 /* ------------------------------------ */
+.k-sliderlabel {
+  display: flex;
+  align-items: center;
+}
 .k-sliderlabel .component-color-indicator {
-  vertical-align: middle;
+  display: inline-block;
   margin-left: 10px;
 }
-.editmode .k-blocks-slick-html-slide {
+/* side item style
+---------------------------------*/
+.editmode, .editmode .k-blocks-slick-html-slide {
   position: relative;
 }
 .k-blocks-slick-html-parent.editmode .k-blocks-slick-html-slide-content>.wp-block::after {
@@ -16,6 +22,7 @@
   border-radius: 1px 0 1px 1px;
   position: relative;
 }
+.k-blocks-slick-html-parent.editmode .k-blocks-slick-html-slide-content>.wp-block.is-highlighted::after,
 .k-blocks-slick-html-parent.editmode .k-blocks-slick-html-slide-content>.wp-block.is-selected::after {
   box-shadow: 0 0 0 2px #007cba;
 }
@@ -24,83 +31,19 @@
   content: "Slide";
   font-size: 10px;
   line-height: 12px;
-  padding: 4px 8px;
-  top: -20px;
+  padding: 3px 7px;
+  top: -18px;
   right: -1px;
   background-color: #a8a8a8;
   color: #ffffff;
   border-radius: 3px 3px 0 0;
 }
+.k-blocks-slick-html-parent.editmode .wp-block.is-highlighted>.k-blocks-slick-html-slide::before,
 .k-blocks-slick-html-parent.editmode .wp-block.is-selected>.k-blocks-slick-html-slide::before {
   background-color: #007cba;
 }
-.k-blocks-slick-html-slide.slick-slide {
-    overflow: hidden;
-}
-/* arrows and dots fixes
-----------------------------------------*/
-body ul.slick-dots {
-  margin: 0;
-  padding-left: 0;
-  padding-right: 0;
-}
-
-/* ------------------------------------ */
-/*            bs-grid styles            */
-/* ------------------------------------ */
-.k-bs-grid>.block-editor-inner-blocks>.block-editor-block-list__layout {
-  display: flex;
-  flex-wrap: wrap;
-  margin-right: 0px;
-  margin-left: 0px;
-}
-.k-bs-grid.has-justify-content-center>.block-editor-inner-blocks>.block-editor-block-list__layout { justify-content: center; }
-.k-bs-grid.has-justify-content-start>.block-editor-inner-blocks>.block-editor-block-list__layout { justify-content: start; }
-.k-bs-grid.has-justify-content-end>.block-editor-inner-blocks>.block-editor-block-list__layout { justify-content: end; }
-.k-bs-grid.has-justify-content-between>.block-editor-inner-blocks>.block-editor-block-list__layout { justify-content: space-between; }
-.k-bs-grid.has-justify-content-around>.block-editor-inner-blocks>.block-editor-block-list__layout { justify-content: space-around; }
-
-.k-bs-grid>.block-editor-inner-blocks>.block-editor-block-list__layout>.wp-block {
-  margin-top: 0;
-  margin-bottom: 0;
-}
-
-.grid-align-align-items-start>.block-editor-inner-blocks>.block-editor-block-list__layout { align-items: flex-start; }
-.grid-align-align-items-center>.block-editor-inner-blocks>.block-editor-block-list__layout { align-items: center; }
-.grid-align-align-items-end>.block-editor-inner-blocks>.block-editor-block-list__layout { align-items: flex-end; }
-
-.is-pressed .active-white { fill: white; }
-
-.k-bs-grid-admin-col .block-editor-block-list__layout { min-height: 2rem; }
-.block-editor-block-list__layout .block-editor-block-list__block[data-type="k-blocks-bs-grid/k-blocks"]:not([contenteditable]):focus:after  {
-  left: -9px;
-  right: -9px;
-  top: 0;
-  bottom: 0;
-}
-.block-editor-block-list__block[data-type="k-blocks-bs-grid/k-blocks"] .block-editor-block-list__layout.has-overlay:after {
-  display: none;
-}
-/* styles for selectable column area */
-.k-bs-grid-admin-col {
-  position: relative;
-}
-.has-child-selected .k-bs-grid-admin-col:not(.is-selected)::after,
-.is-selected .k-bs-grid-admin-col:not(.is-selected)::after {
-  content: "";
-  border: 1px solid #a8a8a8;
-  border-radius: 1px;
-  position: absolute;
-  top: -0.5px;
-  left: -0.5px;
-  right: -0.5px;
-  bottom: -0.5px;
-}
-.k-blocks-slick-html-slide-content>.is-selected .k-bs-grid-admin-col::after {
-  border: 1px solid #007cba;
-}
-
-/* column labels style */
+/* column labels style
+---------------------------------*/
 .has-child-selected .k-bs-grid-admin-col::before,
 .is-selected .k-bs-grid-admin-col::before {
   position: absolute;
@@ -122,19 +65,130 @@ body ul.slick-dots {
   border-left: 1px solid #007cba;
   color: #007cba;
 }
-
+div.block-editor-block-list__layout .is-highlighted.k-bs-grid-admin-col::before,
 .has-child-selected .k-bs-grid-admin-col.is-selected::before {
   color: #007cba;
   border-bottom: 2px solid #007cba;
   border-left: 2px solid #007cba;
   font-weight: bold;
+  z-index: 0;
 }
-.has-child-selected .k-bs-grid-admin-col.is-selected:not(:focus):after {
+div.block-editor-block-list__layout .is-highlighted.k-bs-grid-admin-col::after,
+.has-child-selected .k-bs-grid-admin-col.is-selected:not(:focus)::after {
   position: absolute;
   content: "";
   top: 1px; left: 1px; right: 1px; bottom: 1px;
+  border-radius: 1px;
   box-shadow: 0 0 0 2px #007cba;
+}
+/* bring to front col child when selected */
+.k-bs-grid-admin-col.is-selected, .k-bs-grid-admin-col:not(.is-highlighted) .is-selected, .k-bs-grid-admin-col .is-highlighted {
+  position: relative;
   z-index: 1;
+}
+
+/* column labels style
+---------------------------------*/
+.block-editor-block-list__layout .block-editor-block-list__block[data-type="k-blocks-slick-html-parent/k-blocks"]:not([contenteditable]):focus:after {
+  box-shadow: none;
+}
+div[data-type="k-blocks-slick-html-parent/k-blocks"] .k-blocks-slick-html-parent.editmode::before {
+  content: "";
+  position: absolute;
+  box-shadow: 0 0 0 2px #a8a8a8;
+  top: 1px; left: 1px; right: 1px; bottom: 1px;
+  border-radius: 1px;
+}
+div.is-selected[data-type="k-blocks-slick-html-parent/k-blocks"] .k-blocks-slick-html-parent.editmode::before {
+  box-shadow: 0 0 0 2px #007cba;
+}
+div[data-type="k-blocks-slick-html-parent/k-blocks"] .k-blocks-slick-html-parent.editmode::after {
+  position: absolute;
+  content: "Slider";
+  font-size: 10px;
+  line-height: 12px;
+  padding: 3px 7px;
+  top: -18px;
+  right: -1px;
+  background-color: #a8a8a8;
+  color: #ffffff;
+  border-radius: 3px 3px 0 0;
+}
+div.is-selected[data-type="k-blocks-slick-html-parent/k-blocks"] .k-blocks-slick-html-parent.editmode::after {
+  background-color: #007cba;
+}
+
+.k-blocks-slick-html-slide.slick-slide {
+    overflow: hidden;
+}
+.k-slider-custom-controls .components-notice {
+  margin: 8px 0 24px;
+  justify-content: stretch;
+  padding: 8px;
+}
+.k-slider-custom-controls .components-notice .components-notice__content { margin: 0; }
+.k-slider-custom-controls .components-notice p { margin-bottom: 5px; }
+/* arrows and dots fixes
+----------------------------------------*/
+body ul.slick-dots {
+  margin: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* ------------------------------------ */
+/*            bs-grid styles            */
+/* ------------------------------------ */
+.k-bs-grid>.block-editor-inner-blocks>.block-editor-block-list__layout {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: 0px;
+  margin-left: 0px;
+}
+.k-bs-grid.has-justify-content-center>.block-editor-inner-blocks>.block-editor-block-list__layout { justify-content: center;  }
+.k-bs-grid.has-justify-content-start>.block-editor-inner-blocks>.block-editor-block-list__layout { justify-content: start; }
+.k-bs-grid.has-justify-content-end>.block-editor-inner-blocks>.block-editor-block-list__layout { justify-content: end; }
+.k-bs-grid.has-justify-content-between>.block-editor-inner-blocks>.block-editor-block-list__layout { justify-content: space-between; }
+.k-bs-grid.has-justify-content-around>.block-editor-inner-blocks>.block-editor-block-list__layout { justify-content: space-around; }
+
+.k-bs-grid>.block-editor-inner-blocks>.block-editor-block-list__layout>.wp-block {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.grid-align-align-items-start>.block-editor-inner-blocks>.block-editor-block-list__layout { align-items: flex-start; align-content: flex-start; }
+.grid-align-align-items-center>.block-editor-inner-blocks>.block-editor-block-list__layout { align-items: center; align-content: center; }
+.grid-align-align-items-end>.block-editor-inner-blocks>.block-editor-block-list__layout { align-items: flex-end; align-content: flex-end; }
+
+.is-pressed .active-white { fill: white; }
+
+.k-bs-grid-admin-col .block-editor-block-list__layout { min-height: 1rem; }
+.block-editor-block-list__layout .block-editor-block-list__block[data-type="k-blocks-bs-grid/k-blocks"]:not([contenteditable]):focus:after  {
+  left: -9px;
+  right: -9px;
+  top: 0;
+  bottom: 0;
+}
+.block-editor-block-list__block[data-type="k-blocks-bs-grid/k-blocks"] .block-editor-block-list__layout.has-overlay:after {
+  display: none;
+}
+/* styles for selectable column area */
+.k-bs-grid-admin-col {
+  position: relative;
+}
+.has-child-selected .k-bs-grid-admin-col:not(.is-selected)::after,
+.is-selected .k-bs-grid-admin-col:not(.is-selected)::after {
+  content: "";
+  box-shadow: 0 0 0 1px #a8a8a8;
+  border-radius: 1px;
+  position: absolute;
+  top: 0.5001px;
+  left: 0.5001px;
+  right: 0.5001px;
+  bottom: 0.5001px;
+}
+.k-blocks-slick-html-slide-content>.is-selected .k-bs-grid-admin-col::after {
+  box-shadow: 0 0 0 1px #007cba;
 }
 
 /* columns-controls-colors */
@@ -155,11 +209,15 @@ body ul.slick-dots {
   margin-bottom: 0;
 }
 .k-bs-grid-cols-controls .components-range-control__root { margin-top: 5px; }
-.k-bs-grid-cols-controls label.components-checkbox-control__label {
+/* grid selector styles */
+.k-bs-grid-cols-controls .k-bs-grid-cols-selector label.components-checkbox-control__label {
   margin-bottom: 0;
-  font-weight: bold;
+  font-weight: normal;
   min-width: 25px;
 }
+.k-bs-grid-cols-selector .components-checkbox-control__input-container { margin-right: 8px; }
+.k-bs-grid-cols-controls .k-bs-grid-cols-selector { min-width: 55px; }
+.k-bs-grid-cols-controls .k-bs-grid-cols-range .components-range-control__number { max-width: 50px; }
 /* placeholder styles */
 div.is-selected>.k-bs-grid>.components-placeholder {
   box-shadow: none;
@@ -175,6 +233,13 @@ div.is-selected>.k-bs-grid>.components-placeholder {
 }
 .k-bs-grid-admin-col>span>div>div>.block-list-appender .block-editor-button-block-appender {
   box-shadow: none;
+  bodrer-radius: 1;
+}
+.k-blocks-slick-html-slide-content>.wp-block.is-selected .k-bs-grid-admin-col>span>div>div>.block-list-appender .block-editor-button-block-appender {
+  box-shadow: none;
+}
+.k-bs-grid-admin-col.is-selected>span>div>div>.block-list-appender .block-editor-button-block-appender {
+  box-shadow: 0 0 0 1px #007cba;
 }
 
 /* html slider edit mode styles
@@ -191,7 +256,6 @@ div.is-selected>.k-bs-grid>.components-placeholder {
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='white'><rect fill='%23f5f5f5' x='0' y='0' width='10' height='10'/><rect fill='%23f5f5f5' x='10' y='10' width='10' height='10'/></svg>");
   background-repeat: repeat;
   background-size: 20px 20px;
-  border: 1px solid lightgray;
 }
 .has-child-selected>.k-blocks-slick-html-parent.editmode .k-blocks-slick-html-slide .k-bs-slider-block-container.container,
 .is-selected>.k-blocks-slick-html-parent.editmode .k-blocks-slick-html-slide .k-bs-slider-block-container.container {

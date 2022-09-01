@@ -2,7 +2,7 @@
 /*
 Plugin Name: Slick Slider Blocks
 Description: Slick Slider Blocks for "Megastrap" theme
-Version: 2.0
+Version: 2.1
 Author: Constantine
 Author URI: https://github.com/constantine-design/
 Text Domain:

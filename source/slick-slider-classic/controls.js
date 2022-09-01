@@ -10,6 +10,8 @@ exports.Controls = Controls;
 
 var _PannelUltimateBgControl = require('../common/PannelUltimateBgControl.js');
 
+var _SliderControlsPannel = require('../common/SliderControlsPannel.js');
+
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function Controls(args) {
@@ -168,9 +170,9 @@ function Controls(args) {
           render: function render(_ref) {
             var open = _ref.open;
             return wp.element.createElement(
-              Button,
-              { className: 'components-button components-toolbar-button', onClick: open },
-              ' Edit Gallery '
+              ToolbarButton,
+              { icon: 'images-alt2', onClick: open },
+              __('Edit Slides')
             );
           }
         })
@@ -296,186 +298,38 @@ function Controls(args) {
           }
         })
       ),
-      wp.element.createElement(
-        PanelBody,
-        { title: __('Control style options'), initialOpen: false },
-        props.attributes.arrows && wp.element.createElement(
-          Fragment,
-          null,
-          wp.element.createElement(
-            Flex,
-            { style: { 'marginBottom': '1rem', 'marginTop': '0.5rem' } },
-            wp.element.createElement(
-              FlexItem,
-              { className: 'css-wdf2ti-Wrapper' },
-              wp.element.createElement(
-                'label',
-                { className: 'k-sliderlabel' },
-                'Arrows Color',
-                wp.element.createElement(ColorIndicator, { colorValue: props.attributes.arrowsColorClass ? "#ffffff" : "#1e1e1e" })
-              )
-            ),
-            wp.element.createElement(
-              FlexItem,
-              null,
-              wp.element.createElement(
-                ButtonGroup,
-                null,
-                wp.element.createElement(
-                  Button,
-                  { isSmall: true, className: props.attributes.arrowsColorClass == '' ? 'is-primary' : '', onClick: function onClick() {
-                      return props.setAttributes({ arrowsColorClass: "" });
-                    } },
-                  'Dark'
-                ),
-                wp.element.createElement(
-                  Button,
-                  { isSmall: true, className: props.attributes.arrowsColorClass == 'light-arrows' ? 'is-primary' : '', onClick: function onClick() {
-                      return props.setAttributes({ arrowsColorClass: "light-arrows" });
-                    } },
-                  'Light'
-                )
-              )
-            )
-          ),
-          wp.element.createElement(
-            Flex,
-            { style: { 'marginBottom': '0.5rem' } },
-            wp.element.createElement(
-              FlexItem,
-              { className: 'css-wdf2ti-Wrapper' },
-              wp.element.createElement(
-                'label',
-                null,
-                'Arrow Size'
-              )
-            ),
-            wp.element.createElement(
-              FlexItem,
-              null,
-              wp.element.createElement(SelectControl, {
-                value: props.attributes.arrowsSizeClass,
-                options: [{ label: 'Big', value: 'big-arrows' }, { label: 'Medium', value: '' }, { label: 'Small', value: 'small-arrows' }],
-                onChange: function onChange(size) {
-                  return props.setAttributes({ arrowsSizeClass: size });
-                }
-              })
-            )
-          ),
-          wp.element.createElement(
-            Flex,
-            { style: { 'marginBottom': '2rem' } },
-            wp.element.createElement(
-              FlexItem,
-              { className: 'css-wdf2ti-Wrapper' },
-              wp.element.createElement(
-                'label',
-                null,
-                'Arrow Position'
-              )
-            ),
-            wp.element.createElement(
-              FlexItem,
-              null,
-              wp.element.createElement(SelectControl, {
-                value: props.attributes.arrowsPositionClass,
-                options: [{ label: 'Outside', value: 'arrows-outer' }, { label: 'Inside', value: 'arrows-inner' }, { label: 'Bottom', value: 'arrows-bottom' }],
-                onChange: function onChange(pos) {
-                  return props.setAttributes({ arrowsPositionClass: pos });
-                }
-              })
-            )
-          )
-        ),
-        props.attributes.dots && wp.element.createElement(
-          Fragment,
-          null,
-          wp.element.createElement(
-            Flex,
-            { style: { 'marginBottom': '1rem', 'marginTop': '0.5rem' } },
-            wp.element.createElement(
-              FlexItem,
-              { className: 'css-wdf2ti-Wrapper' },
-              wp.element.createElement(
-                'label',
-                { className: 'k-sliderlabel' },
-                'Dots Color',
-                wp.element.createElement(ColorIndicator, { colorValue: props.attributes.dotsColorClass ? "#ffffff" : "#1e1e1e" })
-              )
-            ),
-            wp.element.createElement(
-              FlexItem,
-              null,
-              wp.element.createElement(
-                ButtonGroup,
-                null,
-                wp.element.createElement(
-                  Button,
-                  { isSmall: true, className: props.attributes.dotsColorClass == '' ? 'is-primary' : '', onClick: function onClick() {
-                      return props.setAttributes({ dotsColorClass: "" });
-                    } },
-                  'Dark'
-                ),
-                wp.element.createElement(
-                  Button,
-                  { isSmall: true, className: props.attributes.dotsColorClass == 'light-dots' ? 'is-primary' : '', onClick: function onClick() {
-                      return props.setAttributes({ dotsColorClass: "light-dots" });
-                    } },
-                  'Light'
-                )
-              )
-            )
-          ),
-          wp.element.createElement(
-            Flex,
-            { style: { 'marginBottom': '0.5rem' } },
-            wp.element.createElement(
-              FlexItem,
-              { className: 'css-wdf2ti-Wrapper' },
-              wp.element.createElement(
-                'label',
-                null,
-                'Dots Size'
-              )
-            ),
-            wp.element.createElement(
-              FlexItem,
-              null,
-              wp.element.createElement(SelectControl, {
-                value: props.attributes.dotsSizeClass,
-                options: [{ label: 'Big', value: 'big-dots' }, { label: 'Medium', value: '' }, { label: 'Small', value: 'small-dots' }],
-                onChange: function onChange(size) {
-                  return props.setAttributes({ dotsSizeClass: size });
-                }
-              })
-            )
-          ),
-          wp.element.createElement(
-            Flex,
-            { style: { 'marginBottom': '2rem' } },
-            wp.element.createElement(
-              FlexItem,
-              { className: 'css-wdf2ti-Wrapper' },
-              wp.element.createElement(
-                'label',
-                null,
-                'Dots Position'
-              )
-            ),
-            wp.element.createElement(
-              FlexItem,
-              null,
-              wp.element.createElement(SelectControl, {
-                value: props.attributes.dotsPositionClass,
-                options: [{ label: 'Outer', value: '' }, { label: 'Inner', value: 'dots-inner' }],
-                onChange: function onChange(pos) {
-                  return props.setAttributes({ dotsPositionClass: pos });
-                }
-              })
-            )
-          )
-        )
-      ),
+      wp.element.createElement(_SliderControlsPannel.SliderControlsPannel, {
+        arrows: props.attributes.arrows,
+        arrowsColorClass: props.attributes.arrowsColorClass,
+        setArrowsColorClass: function setArrowsColorClass(val) {
+          return props.setAttributes({ arrowsColorClass: val });
+        },
+        arrowsSizeClass: props.attributes.arrowsSizeClass,
+        setArrowsSizeClass: function setArrowsSizeClass(size) {
+          return props.setAttributes({ arrowsSizeClass: size });
+        },
+        arrowsPositionClass: props.attributes.arrowsPositionClass,
+        setArrowsPositionClass: function setArrowsPositionClass(pos) {
+          return props.setAttributes({ arrowsPositionClass: pos });
+        },
+        dots: props.attributes.dots,
+        dotsColorClass: props.attributes.dotsColorClass,
+        setDotsColorClass: function setDotsColorClass(val) {
+          return props.setAttributes({ dotsColorClass: val });
+        },
+        dotsSizeClass: props.attributes.dotsSizeClass,
+        setDotsSizeClass: function setDotsSizeClass(size) {
+          return props.setAttributes({ dotsSizeClass: size });
+        },
+        dotsPositionClass: props.attributes.dotsPositionClass,
+        setDotsPositionClass: function setDotsPositionClass(pos) {
+          return props.setAttributes({ dotsPositionClass: pos });
+        },
+        isControlsCustom: props.attributes.isControlsCustom,
+        setIsControlsCustom: function setIsControlsCustom(val) {
+          return props.setAttributes({ isControlsCustom: val });
+        }
+      }),
       wp.element.createElement(
         PanelBody,
         { title: __('Responsive options'), initialOpen: false },

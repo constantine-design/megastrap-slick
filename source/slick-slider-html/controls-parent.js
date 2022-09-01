@@ -1,11 +1,13 @@
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.ControlsSetParent = ControlsSetParent;
 
-var _PannelUltimateBgControl = require("../common/PannelUltimateBgControl.js");
+var _PannelUltimateBgControl = require('../common/PannelUltimateBgControl.js');
+
+var _SliderControlsPannel = require('../common/SliderControlsPannel.js');
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; } /** @jsx wp.element.createElement */
 
@@ -124,13 +126,13 @@ function ControlsSetParent(args) {
         Toolbar,
         null,
         wp.element.createElement(ToolbarButton, {
-          icon: "arrow-left-alt2",
-          title: "Previous Slide",
+          icon: 'arrow-left-alt2',
+          title: 'Previous Slide',
           onClick: prevSlide
         }),
         wp.element.createElement(ToolbarButton, {
-          icon: "arrow-right-alt2",
-          title: "Next Slide",
+          icon: 'arrow-right-alt2',
+          title: 'Next Slide',
           onClick: nextSlide
         })
       ),
@@ -138,20 +140,23 @@ function ControlsSetParent(args) {
         Toolbar,
         null,
         wp.element.createElement(ToolbarButton, {
-          icon: "plus-alt2",
-          title: "Add new slide before",
+          icon: 'plus-alt2',
+          title: 'Add new slide before',
           onClick: addEmptySlide
         })
       ),
       wp.element.createElement(
         Toolbar,
         null,
-        wp.element.createElement(ToolbarButton, {
-          icon: "edit",
-          title: "Edit mode",
-          onClick: props.toggleEditMode,
-          isActive: props.editMode
-        })
+        wp.element.createElement(
+          ToolbarButton,
+          {
+            icon: 'edit',
+            title: 'Edit mode',
+            onClick: props.toggleEditMode
+          },
+          !props.editMode ? __('Edit mode') : __('Preview mode')
+        )
       )
     ),
     wp.element.createElement(
@@ -163,15 +168,15 @@ function ControlsSetParent(args) {
         wp.element.createElement(
           Button,
           {
-            icon: "edit",
-            title: "Edit mode",
+            icon: 'edit',
+            title: 'Edit mode',
             isSecondary: true,
-            style: { 'marginTop': '0.5rem', 'marginBottom': '1.5rem' },
+            style: { marginTop: '0.5rem', marginBottom: '1.5rem', padding: '6px 12px 6px 6px' },
             onClick: props.toggleEditMode,
             isActive: props.editMode
           },
           props.editMode && __('Preview mode'),
-          " ",
+          ' ',
           !props.editMode && __('Edit mode')
         ),
         wp.element.createElement(
@@ -185,7 +190,7 @@ function ControlsSetParent(args) {
             min: 0,
             max: 50,
             label: __('Slide body min height' + ' (Rem)'),
-            type: "Rem"
+            type: 'Rem'
           }),
           wp.element.createElement(RangeControl, {
             value: att.slidesToShow,
@@ -273,186 +278,38 @@ function ControlsSetParent(args) {
           })
         )
       ),
-      wp.element.createElement(
-        PanelBody,
-        { title: __('Control style options'), initialOpen: false },
-        att.arrows && wp.element.createElement(
-          Fragment,
-          null,
-          wp.element.createElement(
-            Flex,
-            { style: { 'marginBottom': '1rem', 'marginTop': '0.5rem' } },
-            wp.element.createElement(
-              FlexItem,
-              { className: "css-wdf2ti-Wrapper" },
-              wp.element.createElement(
-                "label",
-                { className: "k-sliderlabel" },
-                "Arrows Color",
-                wp.element.createElement(ColorIndicator, { colorValue: att.arrowsColorClass ? "#ffffff" : "#1e1e1e" })
-              )
-            ),
-            wp.element.createElement(
-              FlexItem,
-              null,
-              wp.element.createElement(
-                ButtonGroup,
-                null,
-                wp.element.createElement(
-                  Button,
-                  { isSmall: true, className: att.arrowsColorClass == '' ? 'is-primary' : '', onClick: function onClick() {
-                      return props.setAttributes({ arrowsColorClass: "" });
-                    } },
-                  "Dark"
-                ),
-                wp.element.createElement(
-                  Button,
-                  { isSmall: true, className: att.arrowsColorClass == 'light-arrows' ? 'is-primary' : '', onClick: function onClick() {
-                      return props.setAttributes({ arrowsColorClass: "light-arrows" });
-                    } },
-                  "Light"
-                )
-              )
-            )
-          ),
-          wp.element.createElement(
-            Flex,
-            { style: { 'marginBottom': '0.5rem' } },
-            wp.element.createElement(
-              FlexItem,
-              { className: "css-wdf2ti-Wrapper" },
-              wp.element.createElement(
-                "label",
-                null,
-                "Arrow Size"
-              )
-            ),
-            wp.element.createElement(
-              FlexItem,
-              null,
-              wp.element.createElement(SelectControl, {
-                value: att.arrowsSizeClass,
-                options: [{ label: 'Big', value: 'big-arrows' }, { label: 'Medium', value: '' }, { label: 'Small', value: 'small-arrows' }],
-                onChange: function onChange(size) {
-                  return props.setAttributes({ arrowsSizeClass: size });
-                }
-              })
-            )
-          ),
-          wp.element.createElement(
-            Flex,
-            { style: { 'marginBottom': '2rem' } },
-            wp.element.createElement(
-              FlexItem,
-              { className: "css-wdf2ti-Wrapper" },
-              wp.element.createElement(
-                "label",
-                null,
-                "Arrow Position"
-              )
-            ),
-            wp.element.createElement(
-              FlexItem,
-              null,
-              wp.element.createElement(SelectControl, {
-                value: att.arrowsPositionClass,
-                options: [{ label: 'Outside', value: 'arrows-outer' }, { label: 'Inside', value: 'arrows-inner' }, { label: 'Bottom', value: 'arrows-bottom' }],
-                onChange: function onChange(pos) {
-                  return props.setAttributes({ arrowsPositionClass: pos });
-                }
-              })
-            )
-          )
-        ),
-        att.dots && wp.element.createElement(
-          Fragment,
-          null,
-          wp.element.createElement(
-            Flex,
-            { style: { 'marginBottom': '1rem', 'marginTop': '0.5rem' } },
-            wp.element.createElement(
-              FlexItem,
-              { className: "css-wdf2ti-Wrapper" },
-              wp.element.createElement(
-                "label",
-                { className: "k-sliderlabel" },
-                "Dots Color",
-                wp.element.createElement(ColorIndicator, { colorValue: att.dotsColorClass ? "#ffffff" : "#1e1e1e" })
-              )
-            ),
-            wp.element.createElement(
-              FlexItem,
-              null,
-              wp.element.createElement(
-                ButtonGroup,
-                null,
-                wp.element.createElement(
-                  Button,
-                  { isSmall: true, className: att.dotsColorClass == '' ? 'is-primary' : '', onClick: function onClick() {
-                      return props.setAttributes({ dotsColorClass: "" });
-                    } },
-                  "Dark"
-                ),
-                wp.element.createElement(
-                  Button,
-                  { isSmall: true, className: att.dotsColorClass == 'light-dots' ? 'is-primary' : '', onClick: function onClick() {
-                      return props.setAttributes({ dotsColorClass: "light-dots" });
-                    } },
-                  "Light"
-                )
-              )
-            )
-          ),
-          wp.element.createElement(
-            Flex,
-            { style: { 'marginBottom': '0.5rem' } },
-            wp.element.createElement(
-              FlexItem,
-              { className: "css-wdf2ti-Wrapper" },
-              wp.element.createElement(
-                "label",
-                null,
-                "Dots Size"
-              )
-            ),
-            wp.element.createElement(
-              FlexItem,
-              null,
-              wp.element.createElement(SelectControl, {
-                value: att.dotsSizeClass,
-                options: [{ label: 'Big', value: 'big-dots' }, { label: 'Medium', value: '' }, { label: 'Small', value: 'small-dots' }],
-                onChange: function onChange(size) {
-                  return props.setAttributes({ dotsSizeClass: size });
-                }
-              })
-            )
-          ),
-          wp.element.createElement(
-            Flex,
-            { style: { 'marginBottom': '2rem' } },
-            wp.element.createElement(
-              FlexItem,
-              { className: "css-wdf2ti-Wrapper" },
-              wp.element.createElement(
-                "label",
-                null,
-                "Dots Position"
-              )
-            ),
-            wp.element.createElement(
-              FlexItem,
-              null,
-              wp.element.createElement(SelectControl, {
-                value: att.dotsPositionClass,
-                options: [{ label: 'Outer', value: '' }, { label: 'Inner', value: 'dots-inner' }],
-                onChange: function onChange(pos) {
-                  return props.setAttributes({ dotsPositionClass: pos });
-                }
-              })
-            )
-          )
-        )
-      ),
+      wp.element.createElement(_SliderControlsPannel.SliderControlsPannel, {
+        arrows: att.arrows,
+        arrowsColorClass: att.arrowsColorClass,
+        setArrowsColorClass: function setArrowsColorClass(val) {
+          return props.setAttributes({ arrowsColorClass: val });
+        },
+        arrowsSizeClass: att.arrowsSizeClass,
+        setArrowsSizeClass: function setArrowsSizeClass(size) {
+          return props.setAttributes({ arrowsSizeClass: size });
+        },
+        arrowsPositionClass: att.arrowsPositionClass,
+        setArrowsPositionClass: function setArrowsPositionClass(pos) {
+          return props.setAttributes({ arrowsPositionClass: pos });
+        },
+        dots: att.dots,
+        dotsColorClass: att.dotsColorClass,
+        setDotsColorClass: function setDotsColorClass(val) {
+          return props.setAttributes({ dotsColorClass: val });
+        },
+        dotsSizeClass: att.dotsSizeClass,
+        setDotsSizeClass: function setDotsSizeClass(size) {
+          return props.setAttributes({ dotsSizeClass: size });
+        },
+        dotsPositionClass: att.dotsPositionClass,
+        setDotsPositionClass: function setDotsPositionClass(pos) {
+          return props.setAttributes({ dotsPositionClass: pos });
+        },
+        isControlsCustom: att.isControlsCustom,
+        setIsControlsCustom: function setIsControlsCustom(val) {
+          return props.setAttributes({ isControlsCustom: val });
+        }
+      }),
       wp.element.createElement(
         PanelBody,
         { title: __('Responsive options'), initialOpen: false },
@@ -468,7 +325,7 @@ function ControlsSetParent(args) {
           Fragment,
           null,
           wp.element.createElement(RangeControl, {
-            beforeIcon: "columns",
+            beforeIcon: 'columns',
             label: __('Slides to show'),
             value: att.slidesToShowSM,
             onChange: function onChange(newcontent) {
@@ -478,7 +335,7 @@ function ControlsSetParent(args) {
             max: 10
           }),
           wp.element.createElement(RangeControl, {
-            beforeIcon: "share-alt2",
+            beforeIcon: 'share-alt2',
             label: __('Slides to scroll'),
             value: att.slidesToScrollSM,
             onChange: function onChange(newcontent) {
@@ -500,7 +357,7 @@ function ControlsSetParent(args) {
           Fragment,
           null,
           wp.element.createElement(RangeControl, {
-            beforeIcon: "columns",
+            beforeIcon: 'columns',
             label: __('Slides to show'),
             value: att.slidesToShowMD,
             onChange: function onChange(newcontent) {
@@ -511,7 +368,7 @@ function ControlsSetParent(args) {
             max: 10
           }),
           wp.element.createElement(RangeControl, {
-            beforeIcon: "share-alt2",
+            beforeIcon: 'share-alt2',
             label: __('Slides to scroll'),
             value: att.slidesToScrollMD,
             onChange: function onChange(newcontent) {
@@ -533,7 +390,7 @@ function ControlsSetParent(args) {
           Fragment,
           null,
           wp.element.createElement(RangeControl, {
-            beforeIcon: "columns",
+            beforeIcon: 'columns',
             label: __('Slides to show'),
             value: att.slidesToShowLG,
             onChange: function onChange(newcontent) {
@@ -543,7 +400,7 @@ function ControlsSetParent(args) {
             max: 10
           }),
           wp.element.createElement(RangeControl, {
-            beforeIcon: "share-alt2",
+            beforeIcon: 'share-alt2',
             label: __('Slides to scroll'),
             value: att.slidesToScrollLG,
             onChange: function onChange(newcontent) {
@@ -565,7 +422,7 @@ function ControlsSetParent(args) {
           Fragment,
           null,
           wp.element.createElement(RangeControl, {
-            beforeIcon: "columns",
+            beforeIcon: 'columns',
             label: __('Slides to show'),
             value: att.slidesToShowXL,
             onChange: function onChange(newcontent) {
@@ -575,7 +432,7 @@ function ControlsSetParent(args) {
             max: 10
           }),
           wp.element.createElement(RangeControl, {
-            beforeIcon: "share-alt2",
+            beforeIcon: 'share-alt2',
             label: __('Slides to scroll'),
             value: att.slidesToScrollXL,
             onChange: function onChange(newcontent) {

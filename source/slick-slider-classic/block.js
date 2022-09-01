@@ -98,7 +98,8 @@ registerBlockType('k-blocks-sclick-slider-classic/k-blocks', {
     dotsColorClass: { type: 'string', default: '' },
     dotsSizeClass: { type: 'string', default: '' },
     dotsPositionClass: { type: 'string', default: 'arrows-inner' },
-    slidePadding: { type: 'number', default: 0 }
+    slidePadding: { type: 'number', default: 0 },
+    isControlsCustom: { type: 'string', default: '' }
   },
 
   /*=============================================================================*/
@@ -220,7 +221,14 @@ function sliderInnerContent(props) {
 
 function controlClasses(props) {
   var att = props.attributes;
-  var allClasses = [att.arrowsColorClass, att.arrowsSizeClass, att.arrowsPositionClass, att.dotsColorClass, att.dotsSizeClass, att.dotsPositionClass];
+  var allClasses = void 0;
+  if (!att.isControlsCustom) {
+    allClasses = [att.arrowsColorClass, att.arrowsSizeClass, att.arrowsPositionClass, att.dotsColorClass, att.dotsSizeClass, att.dotsPositionClass];
+  } else {
+    allClasses = ['custom-controls', att.isControlsCustom];
+  }
+  if (att.arrows) allClasses.push('has-arrows');
+  if (att.dots) allClasses.push('has-dots');
   return allClasses.filter(function (e) {
     return e !== '';
   }).join(' ');

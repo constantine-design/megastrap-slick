@@ -95,6 +95,7 @@
 	border-width: 0 2px 2px 0;
 	display: inline-block;
 	color: #222222;
+  box-shadow: 1px 1px 1px 0px rgba(255, 255, 255, .3);;
 }
 .slick-next::before {
 	top: 0.55rem;
@@ -113,7 +114,7 @@
 /* big arrows */
 .big-arrows .slick-prev:before, .big-arrows .slick-next:before { width: 1.1rem; height: 1.1rem; top: 0.4rem; }
 /* light theme */
-.light-arrows .slick-prev:before, .light-arrows .slick-next:before { border-color: #ffffff;}
+.light-arrows .slick-prev:before, .light-arrows .slick-next:before { border-color: #ffffff; box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, .3); }
 
 .slick-prev, .slick-next { top: 50%; transform: translate(0, -50%); }
 .slick-prev { left: -30px; }
@@ -139,21 +140,22 @@
   left: unset;
   z-index: 1;
 }
-div.arrows-bottom.dots-inner .slick-slider {
+.arrows-bottom.has-arrows.dots-inner .slick-slider {
   margin-bottom: 1.9rem;
 }
 /* case dots and arrows at bottom */
-.arrows-bottom:not(.dots-inner) .slick-slider.slick-dotted {
+.arrows-bottom:not(.custom-controls).has-arrows:not(.dots-inner).has-dots .slick-slider {
   margin-bottom: calc(30px + 1.9rem);
 }
-.arrows-bottom:not(.dots-inner) .slick-slider.slick-dotted .slick-next,
-.arrows-bottom:not(.dots-inner) .slick-slider.slick-dotted .slick-prev {
+.arrows-bottom:not(.dots-inner).has-dots .slick-slider .slick-next,
+.arrows-bottom:not(.dots-inner).has-dots .slick-slider .slick-prev {
   bottom: calc( (1.9rem + 30px)*-1 );
 }
 
-.slick-dotted.slick-slider { margin-bottom: 30px; }
-.dots-inner .slick-dotted.slick-slider { margin-bottom: 0px; }
+.has-dots:not(.custom-controls) .slick-slider { margin-bottom: 30px; justify-content: }
+.dots-inner.has-dots .slick-slider { margin-bottom: 0px; }
 
+/*
 @media (max-width: 576px) {
   .hero-gallery:not(.arrows-outer) .slick-arrows { margin-top: 50px; }
   .hero-gallery:not(.arrows-outer) .slick-prev { left: calc( 50% - 30px ); }
@@ -162,6 +164,35 @@ div.arrows-bottom.dots-inner .slick-slider {
   .hero-gallery.arrows-outer .slick-prev { left: -22px; }
   .hero-gallery.arrows-outer .slick-next { right: -22px; }
 }
+*/
+
+/* custom controls clean styles */
+.custom-controls .slick-dots li button,
+.custom-controls .slick-next, .custom-controls .slick-prev {
+  top: unset; left: unset; right: unset; bottom: unset;
+  margin: unset; padding: unset; transform: unset;
+  width: unset; height: unset; max-width: unset; max-height: unset;
+  z-index: 1; font-size: 0.1px; line-height: 1;
+  color: transparent; font-family: initial;
+}
+.custom-controls .slick-dots li button:before,
+.custom-controls .slick-next:before, .custom-controls .slick-prev:before {
+  position: static; border: none; outline: none;
+  top: unset; left: unset; right: unset; bottom: unset;
+  margin: unset; padding: unset; transform: unset;
+  width: unset; height: unset; max-width: unset; max-height: unset;
+  z-index: 1; font-size: 1rem; line-height: 1;
+  color: initial; font-family: initial; box-shadow: none; text-shadow: none;
+}
+.custom-controls .slick-next:before { content: 'NEXT'; }
+.custom-controls .slick-prev:before { content: 'PREVIOUS'; }
+.custom-controls .slick-dots li button {
+  font-size: 14px; line-height: 1; color: initial;
+}
+.custom-controls .slick-dots li button:before { content: none; }
+.custom-controls .slick-dots { top: unset; left: unset; right: unset; bottom: unset; }
+
+
 
 /* k-block gallery additional styles & fixes
 --------------------------------------------------------*/
@@ -173,3 +204,9 @@ figure.k-block-slick-classic-item, .editor-styles-wrapper figure.k-block-slick-c
 .k-bs-grid-col :not(.wp-block-image):last-child {
   margin-bottom: 0;
 }
+
+/* additional alignment tools for slider row
+--------------------------------------------------------*/
+.k-blocks-slick-html-inner-content.row.align-items-start { align-items: flex-start; align-content: flex-start; }
+.k-blocks-slick-html-inner-content.row.align-items-center { align-items: center; align-content: center; }
+.k-blocks-slick-html-inner-content.row.align-items-end { align-items: flex-end; align-content: flex-end; }

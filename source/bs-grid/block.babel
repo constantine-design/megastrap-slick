@@ -52,7 +52,7 @@ registerBlockType( 'k-blocks-bs-grid-child/k-blocks', {
     colBreakpoint: { type: 'number', default: 0 },
     colSmBreakpoint: { type: 'number', default: 0 },
     colSmBreakpoint: { type: 'number', default: 0 },
-    colMdBreakpoint: { type: 'number', default: 6 },
+    colMdBreakpoint: { type: 'number', default: 0 },
     colLgBreakpoint: { type: 'number', default: 0 },
     colXlBreakpoint: { type: 'number', default: 0 },
     /* colors */

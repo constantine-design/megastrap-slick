@@ -18,34 +18,6 @@ export function ControlsChild(args) {
   } = wp.components;
   const { useState, useEffect, Fragment } = wp.element;
 
-  function BsBreakPoint( args ) {
-    var propName = args.attributeName;
-    return (
-      <Flex style={ { paddingLeft: '0.8rem', paddingRight: '0.8rem' } } >
-        <FlexItem style={ { paddingTop: '0.5rem', paddingBottom: '0.5rem' } } >
-          <CheckboxControl
-            label={ args.label }
-            checked={ Boolean(props.attributes[propName]) }
-            onChange={ ( newvalue ) => {
-              if ( Boolean(props.attributes[propName]) ) props.setAttributes( { [propName]: 0 } )
-              else props.setAttributes( { [propName]: 6 });
-            } }
-          />
-        </FlexItem>
-        <FlexBlock>
-          { Boolean(props.attributes[propName]) && (
-            <RangeControl
-              value={ props.attributes[propName] }
-              onChange={ ( newvalue ) => props.setAttributes( { [propName]: newvalue }) }
-              min={ 1 }
-              max={ 12 }
-            />
-          )}
-        </FlexBlock>
-      </Flex>
-    );
-  }
-
   /* output */
 
   return (
@@ -56,13 +28,84 @@ export function ControlsChild(args) {
       </BlockControls>
 
       <InspectorControls>
-        <PanelBody title={__('Grid')} >
+        <PanelBody title={__('Breakpoints')} >
           <div className="k-bs-grid-cols-controls">
-            <BsBreakPoint attributeName="colBreakpoint" label="XS" />
-            <BsBreakPoint attributeName="colSmBreakpoint" label="SM" />
-            <BsBreakPoint attributeName="colMdBreakpoint" label="MD"  />
-            <BsBreakPoint attributeName="colLgBreakpoint" label="LG" />
-            <BsBreakPoint attributeName="colXlBreakpoint" label="XL" />
+
+            <Flex style={ { paddingLeft: '0.8rem', paddingRight: '0.8rem' } } >
+              <FlexItem className="k-bs-grid-cols-selector" style={ { paddingTop: '0.6rem', paddingBottom: '0.6rem' } } >
+                <CheckboxControl label={ __('Def') } checked={ Boolean(atts.colBreakpoint) }
+                  onChange={ () => { if (Boolean(atts.colBreakpoint)) props.setAttributes({ colBreakpoint: 0 }); else props.setAttributes({ colBreakpoint: 6 }); } }
+                />
+              </FlexItem>
+              <FlexBlock className="k-bs-grid-cols-range">
+                { Boolean(atts.colBreakpoint) && (
+                  <RangeControl value={ atts.colBreakpoint } min={ 1 } max={ 12 }
+                    onChange={ ( newvalue ) => props.setAttributes( { colBreakpoint: newvalue }) }
+                  />
+                )}
+              </FlexBlock>
+            </Flex>
+
+            <Flex style={ { paddingLeft: '0.8rem', paddingRight: '0.8rem' } } >
+              <FlexItem className="k-bs-grid-cols-selector" style={ { paddingTop: '0.6rem', paddingBottom: '0.6rem' } } >
+                <CheckboxControl label={ "SM" } checked={ Boolean(atts.colSmBreakpoint) }
+                  onChange={ () => { if (Boolean(atts.colSmBreakpoint)) props.setAttributes({ colSmBreakpoint: 0 }); else props.setAttributes({ colSmBreakpoint: 6 }); } }
+                />
+              </FlexItem>
+              <FlexBlock className="k-bs-grid-cols-range">
+                { Boolean(atts.colSmBreakpoint) && (
+                  <RangeControl value={ atts.colSmBreakpoint } min={ 1 } max={ 12 }
+                    onChange={ ( newvalue ) => props.setAttributes( { colSmBreakpoint: newvalue }) }
+                  />
+                )}
+              </FlexBlock>
+            </Flex>
+
+            <Flex style={ { paddingLeft: '0.8rem', paddingRight: '0.8rem' } } >
+              <FlexItem className="k-bs-grid-cols-selector" style={ { paddingTop: '0.6rem', paddingBottom: '0.6rem' } } >
+                <CheckboxControl label={ "MD" } checked={ Boolean(atts.colMdBreakpoint) }
+                  onChange={ () => { if (Boolean(atts.colMdBreakpoint)) props.setAttributes({ colMdBreakpoint: 0 }); else props.setAttributes({ colMdBreakpoint: 6 }); } }
+                />
+              </FlexItem>
+              <FlexBlock className="k-bs-grid-cols-range">
+                { Boolean(atts.colMdBreakpoint) && (
+                  <RangeControl value={ atts.colMdBreakpoint } min={ 1 } max={ 12 }
+                    onChange={ ( newvalue ) => props.setAttributes( { colMdBreakpoint: newvalue }) }
+                  />
+                )}
+              </FlexBlock>
+            </Flex>
+
+            <Flex style={ { paddingLeft: '0.8rem', paddingRight: '0.8rem' } } >
+              <FlexItem className="k-bs-grid-cols-selector" style={ { paddingTop: '0.6rem', paddingBottom: '0.6rem' } } >
+                <CheckboxControl label={ "LG" } checked={ Boolean(atts.colLgBreakpoint) }
+                  onChange={ () => { if (Boolean(atts.colLgBreakpoint)) props.setAttributes({ colLgBreakpoint: 0 }); else props.setAttributes({ colLgBreakpoint: 6 }); } }
+                />
+              </FlexItem>
+              <FlexBlock className="k-bs-grid-cols-range">
+                { Boolean(atts.colLgBreakpoint) && (
+                  <RangeControl value={ atts.colLgBreakpoint } min={ 1 } max={ 12 }
+                    onChange={ ( newvalue ) => props.setAttributes( { colLgBreakpoint: newvalue }) }
+                  />
+                )}
+              </FlexBlock>
+            </Flex>
+
+            <Flex style={ { paddingLeft: '0.8rem', paddingRight: '0.8rem' } } >
+              <FlexItem className="k-bs-grid-cols-selector" style={ { paddingTop: '0.6rem', paddingBottom: '0.6rem' } } >
+                <CheckboxControl label={ "XL" } checked={ Boolean(atts.colXlBreakpoint) }
+                  onChange={ () => { if (Boolean(atts.colXlBreakpoint)) props.setAttributes({ colXlBreakpoint: 0 }); else props.setAttributes({ colXlBreakpoint: 6 }); } }
+                />
+              </FlexItem>
+              <FlexBlock className="k-bs-grid-cols-range">
+                { Boolean(atts.colXlBreakpoint) && (
+                  <RangeControl value={ atts.colXlBreakpoint } min={ 1 } max={ 12 }
+                    onChange={ ( newvalue ) => props.setAttributes( { colXlBreakpoint: newvalue }) }
+                  />
+                )}
+              </FlexBlock>
+            </Flex>
+
           </div>
         </PanelBody>
         <PannelUltimateBgControl

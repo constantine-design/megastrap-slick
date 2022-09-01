@@ -105,6 +105,7 @@ registerBlockType('k-blocks-slick-html-parent/k-blocks', {
     autoplay: { type: 'boolean', default: false },
     fade: { type: 'boolean', default: false },
     pauseOnHover: { type: 'boolean', default: false },
+    /* controls */
     arrowsColorClass: { type: 'string', default: '' },
     arrowsSizeClass: { type: 'string', default: '' },
     arrowsPositionClass: { type: 'string', default: '' },
@@ -114,6 +115,7 @@ registerBlockType('k-blocks-slick-html-parent/k-blocks', {
     centerMode: { type: 'boolean', default: false },
     adaptiveHeight: { type: 'boolean', default: false },
     variableWidth: { type: 'boolean', default: false },
+    isControlsCustom: { type: 'string', default: '' },
     /* responsive */
     responsiveSM: { type: 'boolean', default: false },
     slidesToShowSM: { type: 'number', default: 1 },
@@ -329,7 +331,8 @@ registerBlockType('k-blocks-slick-html-child/k-blocks', {
             wp.element.createElement(InnerBlocks, {
               allowedBlocks: ['k-blocks-bs-grid-child/k-blocks'],
               renderAppender: false,
-              orientation: 'horizontal'
+              orientation: 'horizontal',
+              template: [['k-blocks-bs-grid-child/k-blocks', {}]]
             })
           )
         )
@@ -391,7 +394,14 @@ registerBlockType('k-blocks-slick-html-child/k-blocks', {
 
 function controlClasses(props) {
   var att = props.attributes;
-  var allClasses = [att.arrowsColorClass, att.arrowsSizeClass, att.arrowsPositionClass, att.dotsColorClass, att.dotsSizeClass, att.dotsPositionClass];
+  var allClasses = void 0;
+  if (!att.isControlsCustom) {
+    allClasses = [att.arrowsColorClass, att.arrowsSizeClass, att.arrowsPositionClass, att.dotsColorClass, att.dotsSizeClass, att.dotsPositionClass];
+  } else {
+    allClasses = ['custom-controls', att.isControlsCustom];
+  }
+  if (att.arrows) allClasses.push('has-arrows');
+  if (att.dots) allClasses.push('has-dots');
   return allClasses.filter(function (e) {
     return e !== '';
   }).join(' ');
