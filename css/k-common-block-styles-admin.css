@@ -82,9 +82,16 @@ div.block-editor-block-list__layout .is-highlighted.k-bs-grid-admin-col::after,
   box-shadow: 0 0 0 2px #007cba;
 }
 /* bring to front col child when selected */
-.k-bs-grid-admin-col.is-selected, .k-bs-grid-admin-col:not(.is-highlighted) .is-selected, .k-bs-grid-admin-col .is-highlighted {
+.k-bs-grid-admin-col.is-selected,
+.k-bs-grid-admin-col:not(.is-highlighted) .is-selected,
+.k-bs-grid-admin-col .is-highlighted {
   position: relative;
   z-index: 1;
+}
+.k-bs-grid-admin-col.is-selected>.k-bs-grid-admin-color-wrapper,
+.k-bs-grid-admin-col:not(.is-highlighted) .is-selected>.k-bs-grid-admin-color-wrapper,
+.k-bs-grid-admin-col .is-highlighted>.k-bs-grid-admin-color-wrapper {
+  z-index: -1;
 }
 
 /* column labels style

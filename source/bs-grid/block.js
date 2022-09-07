@@ -102,7 +102,7 @@ registerBlockType('k-blocks-bs-grid-child/k-blocks', {
           backgroundRepeat: atts.bgImageType != 'repeat' ? 'no-repeat,no-repeat' : 'no-repeat,repeat',
           backgroundPosition: atts.bgImageType != 'repeat' ? 'center,' + atts.bgImageFocal.x * 100 + '% ' + atts.bgImageFocal.y * 100 + '%' : 'center,center',
           position: 'absolute',
-          top: '0', left: '0', right: '0', bottom: '0', zIndex: '0'
+          top: '0', left: '0', right: '0', bottom: '0'
         }
       }),
       wp.element.createElement(

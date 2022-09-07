@@ -110,7 +110,7 @@ registerBlockType('k-blocks-sclick-slider-classic/k-blocks', {
 
     if (props.attributes.blockID != props.clientId) props.setAttributes({ blockID: props.clientId });
 
-    var dynamicStyle = '\n      .img-gallery-wrapper-' + props.attributes.blockID + ' .slick-slide {\n        padding-left: ' + props.attributes.slidePadding / 2 + 'rem;\n        padding-right: ' + props.attributes.slidePadding / 2 + 'rem;\n      }\n      .img-gallery-wrapper-' + props.attributes.blockID + ' .slick-slider {\n        padding-left: ' + props.attributes.slidePadding / 2 + 'rem;\n        padding-right: ' + props.attributes.slidePadding / 2 + 'rem;\n      }\n    ';
+    var dynamicStyle = '\n      .img-gallery-wrapper-' + props.attributes.blockID + ' .slick-slide {\n        padding-left: ' + props.attributes.slidePadding / 2 + 'rem;\n        padding-right: ' + props.attributes.slidePadding / 2 + 'rem;\n      }\n    ';
 
     return wp.element.createElement(
       'div',
@@ -161,7 +161,7 @@ registerBlockType('k-blocks-sclick-slider-classic/k-blocks', {
     }
     var frontEndScript = '\n          jQuery(document).ready(function($) {\n            jQuery(document).on(\'click\', \'#img-gallery-' + props.attributes.blockID + ' [data-toggle="lightbox"]\', function(event) {\n                event.preventDefault();\n                jQuery(this).ekkoLightbox();\n            });\n            $(\'#img-gallery-' + props.attributes.blockID + '\').not(\'.slick-initialized\').slick({\n              slidesToShow: ' + props.attributes.slidesToShow + ',\n              slidesToScroll: ' + props.attributes.slidesToScroll + ',\n              arrows: ' + props.attributes.arrows + ',\n              dots: ' + props.attributes.dots + ',\n              infinite: ' + props.attributes.infinite + ',\n              autoplay: ' + props.attributes.autoplay + ',\n              centerMode: ' + props.attributes.centerMode + ',\n              adaptiveHeight: ' + props.attributes.adaptiveHeight + ',\n              variableWidth: ' + props.attributes.variableWidth + ',\n              fade: ' + props.attributes.fade + ',\n              responsive: [\n                ' + responsiveOptionsRaw + '\n              ]\n            });\n          });\n        ';
 
-    var dynamicStyle = '\n          .img-gallery-wrapper-' + props.attributes.blockID + ' .slick-slide {\n            padding-left: ' + props.attributes.slidePadding / 2 + 'rem;\n            padding-right: ' + props.attributes.slidePadding / 2 + 'rem;\n          }\n          .img-gallery-wrapper-' + props.attributes.blockID + ' .slick-slider {\n            padding-left: ' + props.attributes.slidePadding / 2 + 'rem;\n            padding-right: ' + props.attributes.slidePadding / 2 + 'rem;\n          }\n        ';
+    var dynamicStyle = '\n          .img-gallery-wrapper-' + props.attributes.blockID + ' .slick-slide {\n            padding-left: ' + props.attributes.slidePadding / 2 + 'rem;\n            padding-right: ' + props.attributes.slidePadding / 2 + 'rem;\n          }\n        ';
 
     return wp.element.createElement(
       'div',

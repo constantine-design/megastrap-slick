@@ -102,10 +102,6 @@ registerBlockType( 'k-blocks-sclick-slider-classic/k-blocks', {
         padding-left: `+(props.attributes.slidePadding/2)+`rem;
         padding-right: `+(props.attributes.slidePadding/2)+`rem;
       }
-      .img-gallery-wrapper-`+props.attributes.blockID+` .slick-slider {
-        padding-left: `+(props.attributes.slidePadding/2)+`rem;
-        padding-right: `+(props.attributes.slidePadding/2)+`rem;
-      }
     `;
 
 		return (
@@ -209,10 +205,6 @@ registerBlockType( 'k-blocks-sclick-slider-classic/k-blocks', {
 
         const dynamicStyle = `
           .img-gallery-wrapper-`+props.attributes.blockID+` .slick-slide {
-            padding-left: `+(props.attributes.slidePadding/2)+`rem;
-            padding-right: `+(props.attributes.slidePadding/2)+`rem;
-          }
-          .img-gallery-wrapper-`+props.attributes.blockID+` .slick-slider {
             padding-left: `+(props.attributes.slidePadding/2)+`rem;
             padding-right: `+(props.attributes.slidePadding/2)+`rem;
           }

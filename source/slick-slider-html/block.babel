@@ -129,13 +129,21 @@ registerBlockType( 'k-blocks-slick-html-parent/k-blocks', {
       .slider-edit-`+att.blockID+`>div>.block-editor-block-list__layout {
       	display: flex;
         flex-wrap: wrap;
-        justify-content: space-around;
+        justify-content: start;
+        padding-left: 8px;
+        padding-right: 8px;
       }
       .slider-edit-`+att.blockID+`>div>div>.k-blocks-slick-html-slide-content.d-block {
-        flex: 0 0 calc( 95% / `+att.slidesToShow+` );
-        max-width: calc( 95% / `+att.slidesToShow+` );
+        flex: 0 0 calc( 100% / `+att.slidesToShow+` - 16px );
+        max-width: calc( 100% / `+att.slidesToShow+` - 16px );
+        margin-left: 8px;
+        margin-right: 8px;
       }
-      .slider-edit-`+att.blockID+`>div>div>.block-list-appender.wp-block { width: 95%; }
+      .slider-edit-`+att.blockID+`>div>div>.block-list-appender.wp-block {
+        width: calc( 100% - 16px );
+        margin-left: 8px;
+        margin-right: 8px;
+      }
     `;
 
 		return (

@@ -140,7 +140,8 @@
   left: unset;
   z-index: 1;
 }
-.arrows-bottom.has-arrows.dots-inner .slick-slider {
+.arrows-bottom:not(.custom-controls).has-arrows:not(.has-dots) .slick-slider,
+.arrows-bottom:not(.custom-controls).has-arrows.dots-inner .slick-slider {
   margin-bottom: 1.9rem;
 }
 /* case dots and arrows at bottom */
@@ -152,19 +153,9 @@
   bottom: calc( (1.9rem + 30px)*-1 );
 }
 
-.has-dots:not(.custom-controls) .slick-slider { margin-bottom: 30px; justify-content: }
+.has-dots:not(.custom-controls) .slick-slider { margin-bottom: 30px; }
 .dots-inner.has-dots .slick-slider { margin-bottom: 0px; }
 
-/*
-@media (max-width: 576px) {
-  .hero-gallery:not(.arrows-outer) .slick-arrows { margin-top: 50px; }
-  .hero-gallery:not(.arrows-outer) .slick-prev { left: calc( 50% - 30px ); }
-  .hero-gallery:not(.arrows-outer) .slick-next { right: calc( 50% - 30px ); }
-  .hero-gallery:not(.arrows-outer) .slick-prev, .hero-gallery:not(.arrows-outer) .slick-next { top: -40px; transform: none; }
-  .hero-gallery.arrows-outer .slick-prev { left: -22px; }
-  .hero-gallery.arrows-outer .slick-next { right: -22px; }
-}
-*/
 
 /* custom controls clean styles */
 .custom-controls .slick-dots li button,
@@ -191,7 +182,6 @@
 }
 .custom-controls .slick-dots li button:before { content: none; }
 .custom-controls .slick-dots { top: unset; left: unset; right: unset; bottom: unset; }
-
 
 
 /* k-block gallery additional styles & fixes
