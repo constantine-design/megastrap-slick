@@ -298,7 +298,7 @@ div.is-selected>.k-bs-grid>.components-placeholder {
 }
 
 .k-blocks-slick-html-parent.editmode .components-placeholder {
-  max-width: 95%;
+  max-width: calc(100% - 32px);
   margin: 0 auto 13px;
   border-radius: 2px;
 }

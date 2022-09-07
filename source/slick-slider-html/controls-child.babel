@@ -46,7 +46,7 @@ export function ControlsSetChild(args) {
   const innerColumnsCount = useSelect( ( select ) => select( 'core/block-editor' ).getBlocks( props.clientId ).length,  [ props.clientId ] );
 
   function addEmptyColumn() {
-    const block = wp.blocks.createBlock('k-blocks-bs-grid-child/k-blocks', { colMdBreakpoint: 6 });
+    const block = wp.blocks.createBlock('k-blocks-bs-grid-child/k-blocks', {});
     wp.data.dispatch('core/block-editor').insertBlocks(block, innerColumnsCount, props.clientId);
   }
 

@@ -82,7 +82,7 @@ function ControlsSetChild(args) {
   }, [props.clientId]);
 
   function addEmptyColumn() {
-    var block = wp.blocks.createBlock('k-blocks-bs-grid-child/k-blocks', { colMdBreakpoint: 6 });
+    var block = wp.blocks.createBlock('k-blocks-bs-grid-child/k-blocks', {});
     wp.data.dispatch('core/block-editor').insertBlocks(block, innerColumnsCount, props.clientId);
   }
 
