@@ -73,6 +73,8 @@ div.block-editor-block-list__layout .is-highlighted.k-bs-grid-admin-col::before,
   font-weight: bold;
   z-index: 0;
 }
+.is-dark-theme .block-editor-block-list__layout .block-editor-block-list__block.is-highlighted.k-bs-grid-admin-col::after,
+.is-dark-theme .block-editor-block-list__layout .block-editor-block-list__block.is-selected.k-bs-grid-admin-col::after,
 div.block-editor-block-list__layout .is-highlighted.k-bs-grid-admin-col::after,
 .has-child-selected .k-bs-grid-admin-col.is-selected:not(:focus)::after {
   position: absolute;
@@ -240,7 +242,7 @@ div.is-selected>.k-bs-grid>.components-placeholder {
 }
 .k-bs-grid-admin-col>span>div>div>.block-list-appender .block-editor-button-block-appender {
   box-shadow: none;
-  bodrer-radius: 1;
+  border-radius: 1px;
 }
 .k-blocks-slick-html-slide-content>.wp-block.is-selected .k-bs-grid-admin-col>span>div>div>.block-list-appender .block-editor-button-block-appender {
   box-shadow: none;
@@ -260,7 +262,14 @@ div.is-selected>.k-bs-grid>.components-placeholder {
   padding-bottom: 13px;
 }
 .k-blocks-slick-html-parent.backend.editmode {
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='white'><rect fill='%23f5f5f5' x='0' y='0' width='10' height='10'/><rect fill='%23f5f5f5' x='10' y='10' width='10' height='10'/></svg>");
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><rect fill='%23f5f5f5' x='0' y='0' width='10' height='10'/><rect fill='%23f5f5f5' x='10' y='10' width='10' height='10'/></svg>");
+  background-color: #ffffff;
+  background-repeat: repeat;
+  background-size: 20px 20px;
+}
+.is-dark-theme .k-blocks-slick-html-parent.backend.editmode {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'><rect fill='%23161719' x='0' y='0' width='10' height='10'/><rect fill='%23161719' x='10' y='10' width='10' height='10'/></svg>");
+  background-color: #0f1011;
   background-repeat: repeat;
   background-size: 20px 20px;
 }

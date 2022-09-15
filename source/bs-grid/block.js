@@ -75,7 +75,7 @@ registerBlockType('k-blocks-bs-grid-child/k-blocks', {
     /* breakpoints */
     colBreakpoint: { type: 'number', default: 0 },
     colSmBreakpoint: { type: 'number', default: 0 }
-  }, _defineProperty(_attributes, 'colSmBreakpoint', { type: 'number', default: 0 }), _defineProperty(_attributes, 'colMdBreakpoint', { type: 'number', default: 0 }), _defineProperty(_attributes, 'colLgBreakpoint', { type: 'number', default: 0 }), _defineProperty(_attributes, 'colXlBreakpoint', { type: 'number', default: 0 }), _defineProperty(_attributes, 'color', { type: 'string', default: 'initial' }), _defineProperty(_attributes, 'bgColor', { type: 'string', default: 'transparent' }), _defineProperty(_attributes, 'bgGradient', { type: 'string', default: false }), _defineProperty(_attributes, 'bgImage', { type: 'string' }), _defineProperty(_attributes, 'bgImageId', { type: 'integer', default: 0 }), _defineProperty(_attributes, 'bgImageType', { type: 'string', default: 'cover' }), _defineProperty(_attributes, 'bgImageFocal', { type: 'object', default: { x: '0.5', y: '0.5' } }), _attributes),
+  }, _defineProperty(_attributes, 'colSmBreakpoint', { type: 'number', default: 0 }), _defineProperty(_attributes, 'colMdBreakpoint', { type: 'number', default: 0 }), _defineProperty(_attributes, 'colLgBreakpoint', { type: 'number', default: 0 }), _defineProperty(_attributes, 'colXlBreakpoint', { type: 'number', default: 0 }), _defineProperty(_attributes, 'color', { type: 'string', default: '' }), _defineProperty(_attributes, 'bgColor', { type: 'string', default: '' }), _defineProperty(_attributes, 'bgGradient', { type: 'string', default: false }), _defineProperty(_attributes, 'bgImage', { type: 'string' }), _defineProperty(_attributes, 'bgImageId', { type: 'integer', default: 0 }), _defineProperty(_attributes, 'bgImageType', { type: 'string', default: 'cover' }), _defineProperty(_attributes, 'bgImageFocal', { type: 'object', default: { x: '0.5', y: '0.5' } }), _attributes),
 
   /*-----------------------------------------------------------------------------*/
   /*                                EDIT CHILD                                   */
@@ -95,8 +95,8 @@ registerBlockType('k-blocks-bs-grid-child/k-blocks', {
       wp.element.createElement('div', {
         'class': 'k-bs-grid-admin-color-wrapper',
         style: {
-          color: atts.color,
-          backgroundColor: atts.bgColor,
+          color: atts.color ? atts.color : 'inherit',
+          backgroundColor: atts.bgColor ? atts.bgColor : 'transparent',
           backgroundImage: (atts.bgGradient ? atts.bgGradient : 'none') + ',' + (atts.bgImage ? "url('" + atts.bgImage + "')" : 'none'),
           backgroundSize: atts.bgImageType == 'cover' ? 'auto, cover' : atts.bgImageType == 'contain' ? 'auto, contain' : 'auto, auto',
           backgroundRepeat: atts.bgImageType != 'repeat' ? 'no-repeat,no-repeat' : 'no-repeat,repeat',
@@ -134,8 +134,8 @@ registerBlockType('k-blocks-bs-grid-child/k-blocks', {
         {
           className: "k-bs-grid-col position-relative" + addBlockClass(props) + bsGetColClasses(props),
           style: {
-            color: atts.color,
-            backgroundColor: atts.bgColor,
+            color: atts.color ? atts.color : 'inherit',
+            backgroundColor: atts.bgColor ? atts.bgColor : 'transparent',
             backgroundImage: (atts.bgGradient ? atts.bgGradient : 'none') + ',' + (atts.bgImage ? "url('" + atts.bgImage + "')" : 'none'),
             backgroundSize: atts.bgImageType == 'cover' ? 'auto, cover' : atts.bgImageType == 'contain' ? 'auto, contain' : 'auto, auto',
             backgroundRepeat: atts.bgImageType != 'repeat' ? 'no-repeat,no-repeat' : 'no-repeat,repeat',

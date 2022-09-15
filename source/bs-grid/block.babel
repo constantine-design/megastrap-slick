@@ -56,8 +56,8 @@ registerBlockType( 'k-blocks-bs-grid-child/k-blocks', {
     colLgBreakpoint: { type: 'number', default: 0 },
     colXlBreakpoint: { type: 'number', default: 0 },
     /* colors */
-    color: { type: 'string', default: 'initial', },
-    bgColor: { type: 'string', default: 'transparent', },
+    color: { type: 'string', default: '', },
+    bgColor: { type: 'string', default: '', },
     bgGradient: { type: 'string', default: false, },
     bgImage: { type: 'string' },
     bgImageId: { type: 'integer', default: 0 },
@@ -87,8 +87,8 @@ registerBlockType( 'k-blocks-bs-grid-child/k-blocks', {
         <div
           class="k-bs-grid-admin-color-wrapper"
           style={ {
-            color: atts.color,
-            backgroundColor: atts.bgColor,
+            color: atts.color ? atts.color : 'inherit',
+            backgroundColor: atts.bgColor ? atts.bgColor : 'transparent',
             backgroundImage: ( atts.bgGradient ? atts.bgGradient : 'none' ) + ',' + ( atts.bgImage ? ( "url('"+atts.bgImage+"')" ) : 'none' ),
             backgroundSize: ( (atts.bgImageType=='cover') ? 'auto, cover' : ( (atts.bgImageType=='contain') ? 'auto, contain' : 'auto, auto' ) ),
             backgroundRepeat: ( (atts.bgImageType!='repeat') ? 'no-repeat,no-repeat' : 'no-repeat,repeat' ),
@@ -125,8 +125,8 @@ registerBlockType( 'k-blocks-bs-grid-child/k-blocks', {
             <div
               className={ "k-bs-grid-col position-relative" + addBlockClass(props) + bsGetColClasses(props)  }
               style={ {
-                color: atts.color,
-                backgroundColor: atts.bgColor,
+                color: atts.color ? atts.color : 'inherit',
+                backgroundColor: atts.bgColor ? atts.bgColor : 'transparent',
                 backgroundImage:
                 ( atts.bgGradient ? atts.bgGradient : 'none' ) + ',' +
                 ( atts.bgImage ? ( "url('"+atts.bgImage+"')" ) : 'none' ),

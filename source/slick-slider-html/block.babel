@@ -308,8 +308,8 @@ registerBlockType( 'k-blocks-slick-html-parent/k-blocks', {
         noGutters: { type: 'boolean', default: true },
         isSectionWide: { type: 'boolean', default: true },
         /* color */
-        color: { type: 'string', default: 'inherit', },
-        bgColor: { type: 'string', default: 'transparent', },
+        color: { type: 'string', default: '', },
+        bgColor: { type: 'string', default: '', },
         bgGradient: { type: 'string', default: false, },
         bgImage: { type: 'string' },
         bgImageId: { type: 'integer', default: 0 },
@@ -336,8 +336,8 @@ registerBlockType( 'k-blocks-slick-html-parent/k-blocks', {
         <div
           className={ "k-blocks-slick-html-slide" }
           style={ {
-            color: atts.color,
-            backgroundColor: atts.bgColor,
+            color: atts.color ? atts.color : 'inherit',
+            backgroundColor: atts.bgColor ? atts.bgColor : 'transparent',
             backgroundImage:
             ( atts.bgGradient ? atts.bgGradient : 'none' ) + ',' +
             ( atts.bgImage ? ( "url('"+atts.bgImage+"')" ) : 'none' ),
@@ -380,8 +380,8 @@ registerBlockType( 'k-blocks-slick-html-parent/k-blocks', {
         <div
           className={ "k-blocks-slick-html-slide" + addBlockClass(props) }
           style={ {
-            color: atts.color,
-            backgroundColor: atts.bgColor,
+            color: atts.color ? atts.color : 'inherit',
+            backgroundColor: atts.bgColor ? atts.bgColor : 'transparent',
             backgroundImage:
             ( atts.bgGradient ? atts.bgGradient : 'none' ) + ',' +
             ( atts.bgImage ? ( "url('"+atts.bgImage+"')" ) : 'none' ),
