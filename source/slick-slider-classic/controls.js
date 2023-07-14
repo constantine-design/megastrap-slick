@@ -411,6 +411,13 @@ function Controls(args) {
             return safelySetAttribute('autoplay', !props.attributes.autoplay);
           }
         }),
+        props.attributes.autoplay && wp.element.createElement(ToggleControl, {
+          label: __('Pause Autoplay On Hoover'),
+          checked: props.attributes.pauseOnHover,
+          onChange: function onChange() {
+            return safelySetAttribute('pauseOnHover', !props.attributes.pauseOnHover);
+          }
+        }),
         wp.element.createElement(ToggleControl, {
           label: __('Center Mode'),
           checked: props.attributes.centerMode,
@@ -423,13 +430,6 @@ function Controls(args) {
           checked: props.attributes.adaptiveHeight,
           onChange: function onChange() {
             return safelySetAttribute('adaptiveHeight', !props.attributes.adaptiveHeight);
-          }
-        }),
-        wp.element.createElement(ToggleControl, {
-          label: __('Pause On Hoover'),
-          checked: props.attributes.pauseOnHover,
-          onChange: function onChange() {
-            return safelySetAttribute('pauseOnHover', !props.attributes.pauseOnHover);
           }
         }),
         wp.element.createElement(ToggleControl, {

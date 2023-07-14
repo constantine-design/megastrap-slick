@@ -312,6 +312,13 @@ export function Controls(args) {
             checked={ props.attributes.autoplay }
             onChange={ () => safelySetAttribute( 'autoplay', !props.attributes.autoplay )  }
           />
+          { props.attributes.autoplay &&
+            <ToggleControl
+              label={__('Pause Autoplay On Hoover')}
+              checked={ props.attributes.pauseOnHover }
+              onChange={ () => safelySetAttribute( 'pauseOnHover', !props.attributes.pauseOnHover )  }
+            />
+          }
           <ToggleControl
             label={__('Center Mode')}
             checked={ props.attributes.centerMode }
@@ -321,11 +328,6 @@ export function Controls(args) {
             label={__('Adaptive Height')}
             checked={ props.attributes.adaptiveHeight }
             onChange={ () => safelySetAttribute( 'adaptiveHeight', !props.attributes.adaptiveHeight )  }
-          />
-          <ToggleControl
-            label={__('Pause On Hoover')}
-            checked={ props.attributes.pauseOnHover }
-            onChange={ () => safelySetAttribute( 'pauseOnHover', !props.attributes.pauseOnHover )  }
           />
           <ToggleControl
             label={__('Variable Width')}

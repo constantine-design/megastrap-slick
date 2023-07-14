@@ -400,7 +400,7 @@ function ControlsSetParent(args) {
             label: __('Infinite'),
             checked: att.infinite,
             onChange: function onChange() {
-              return setSliderAttribute('infinite', !att.infinite);
+              return setRestartAttribute('infinite', !att.infinite);
             }
           }),
           wp.element.createElement(ToggleControl, {
@@ -410,23 +410,24 @@ function ControlsSetParent(args) {
               return setSliderAttribute('autoplay', !att.autoplay);
             }
           }),
-          wp.element.createElement(ToggleControl, {
-            label: __('Pause autoplay on hover'),
-            checked: att.pauseOnHover,
-            onChange: function onChange() {
-              return setSliderAttribute('pauseOnHover', !att.pauseOnHover);
-            }
-          }),
-          wp.element.createElement(ToggleControl, {
-            label: __('Fade'),
-            checked: att.fade,
-            onChange: function onChange() {
-              props.setAttributes({ responsiveSM: false, responsiveMD: false, responsiveLG: false, responsiveXL: false });
-              setSliderAttribute('slidesToShow', 1);
-              setSliderAttribute('slidesToScroll', 1);
-              setRestartAttribute('fade', !att.fade);
-            }
-          }),
+          props.attributes.autoplay && wp.element.createElement(
+            Fragment,
+            null,
+            wp.element.createElement(ToggleControl, {
+              label: __('Pause Autoplay on Hover'),
+              checked: att.pauseOnHover,
+              onChange: function onChange() {
+                return setSliderAttribute('pauseOnHover', !att.pauseOnHover);
+              }
+            }),
+            wp.element.createElement(ToggleControl, {
+              label: __('Pause Autoplay on Focus'),
+              checked: att.pauseOnFocus,
+              onChange: function onChange() {
+                return setSliderAttribute('pauseOnFocus', !att.pauseOnFocus);
+              }
+            })
+          ),
           wp.element.createElement(ToggleControl, {
             label: __('Center Mode'),
             checked: att.centerMode,
@@ -442,10 +443,11 @@ function ControlsSetParent(args) {
             }
           }),
           wp.element.createElement(ToggleControl, {
-            label: __('Variable Width'),
-            checked: att.variableWidth,
+            label: __('Fade'),
+            checked: att.fade,
             onChange: function onChange() {
-              return setRestartAttribute('variableWidth', !att.variableWidth);
+              props.setAttributes({ responsiveSM: false, responsiveMD: false, responsiveLG: false, responsiveXL: false, slidesToShow: 1, slidesToScroll: 1 });
+              setRestartAttribute('fade', !att.fade);
             }
           })
         )

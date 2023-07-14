@@ -107,6 +107,7 @@ registerBlockType('k-blocks-slick-html-parent/k-blocks', {
     autoplay: { type: 'boolean', default: false },
     fade: { type: 'boolean', default: false },
     pauseOnHover: { type: 'boolean', default: false },
+    pauseOnFocus: { type: 'boolean', default: false },
     /* controls */
     arrowsColorClass: { type: 'string', default: '' },
     arrowsSizeClass: { type: 'string', default: '' },
@@ -237,7 +238,7 @@ registerBlockType('k-blocks-slick-html-parent/k-blocks', {
     if (att.responsiveXL) responsiveOptionsRaw += '\n      { breakpoint: 1200, settings: { slidesToShow: ' + att.slidesToShowXL + ', slidesToScroll: ' + att.slidesToScrollXL + ', } },';
     if (att.responsiveXXL) responsiveOptionsRaw += '\n      { breakpoint: 1400, settings: { slidesToShow: ' + att.slidesToShowXXL + ', slidesToScroll: ' + att.slidesToScrollXXL + ', } },';
 
-    var frontEndScript = '\n    jQuery(document).ready(function($) {\n      var options = {\n        slidesToShow: ' + props.attributes.slidesToShow + ',\n        slidesToScroll: ' + props.attributes.slidesToScroll + ',\n        arrows: ' + props.attributes.arrows + ',\n        dots: ' + props.attributes.dots + ',\n        infinite: ' + props.attributes.infinite + ',\n        autoplay: ' + props.attributes.autoplay + ',\n        fade: ' + props.attributes.fade + ',\n        pauseOnHover: ' + props.attributes.pauseOnHover + ',\n        adaptiveHeight: true,\n        mobileFirst: true,\n        responsive: [' + responsiveOptionsRaw + ']\n      }\n      $("#html-gallery-' + att.blockID + '").not(\'.slick-initialized\').slick(options);\n      $(window).on( \'resize\', function() {\n        $("#html-gallery-' + att.blockID + '").not(\'.slick-initialized\').slick(options);\n      } );\n    });';
+    var frontEndScript = '\n    jQuery(document).ready(function($) {\n      var options = {\n        slidesToShow: ' + props.attributes.slidesToShow + ',\n        slidesToScroll: ' + props.attributes.slidesToScroll + ',\n        arrows: ' + props.attributes.arrows + ',\n        dots: ' + props.attributes.dots + ',\n        infinite: ' + props.attributes.infinite + ',\n        autoplay: ' + props.attributes.autoplay + ',\n        centerMode: ' + att.centerMode + ',\n        pauseOnHover: ' + props.attributes.pauseOnHover + ',\n        adaptiveHeight: ' + att.adaptiveHeight + ',\n        fade: ' + props.attributes.fade + ',\n        mobileFirst: true,\n        responsive: [' + responsiveOptionsRaw + ']\n      }\n      $("#html-gallery-' + att.blockID + '").not(\'.slick-initialized\').slick(options);\n      $(window).on( \'resize\', function() {\n        $("#html-gallery-' + att.blockID + '").not(\'.slick-initialized\').slick(options);\n      } );\n    });';
 
     return wp.element.createElement(
       'div',

@@ -72,6 +72,7 @@ registerBlockType( 'k-blocks-slick-html-parent/k-blocks', {
     autoplay: { type: 'boolean', default: false },
     fade: { type: 'boolean', default: false },
     pauseOnHover: { type: 'boolean', default: false },
+    pauseOnFocus: { type: 'boolean', default: false },
     /* controls */
     arrowsColorClass: { type: 'string', default: '' },
     arrowsSizeClass: { type: 'string', default: '' },
@@ -240,9 +241,10 @@ registerBlockType( 'k-blocks-slick-html-parent/k-blocks', {
         dots: `+props.attributes.dots+`,
         infinite: `+props.attributes.infinite+`,
         autoplay: `+props.attributes.autoplay+`,
-        fade: `+props.attributes.fade+`,
+        centerMode: `+att.centerMode+`,
         pauseOnHover: `+props.attributes.pauseOnHover+`,
-        adaptiveHeight: true,
+        adaptiveHeight: `+att.adaptiveHeight+`,
+        fade: `+props.attributes.fade+`,
         mobileFirst: true,
         responsive: [`+responsiveOptionsRaw+`]
       }
