@@ -46,7 +46,7 @@ add_action('enqueue_block_editor_assets', function(){
 
 
 //Register block category
-add_filter( 'block_categories', 'k_common_blocks_block_category_registration', 10, 2);
+add_filter( 'block_categories_all', 'k_common_blocks_block_category_registration', 10, 2);
 function k_common_blocks_block_category_registration( $categories, $post ) {
 	return array_merge(
 		array(

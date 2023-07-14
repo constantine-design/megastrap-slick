@@ -26,10 +26,15 @@ export function ControlsSetParent(args) {
   }
 
   let responsiveOptions = [];
+  if ( props.attributes.isUnsilkOnMobile ) {
+    responsiveOptions.push({ breakpoint: 1, settings: 'unslick' });
+    responsiveOptions.push({ breakpoint: 480, settings: { slidesToShow: props.attributes.slidesToShow, slidesToScroll: props.attributes.slidesToScroll } });
+  }
   if ( att.responsiveSM ) responsiveOptions.push({ breakpoint: 576, settings: { slidesToShow: att.slidesToShowSM, slidesToScroll: att.slidesToScrollSM } });
   if ( att.responsiveMD ) responsiveOptions.push({ breakpoint: 768, settings: { slidesToShow: att.slidesToShowMD, slidesToScroll: att.slidesToScrollMD } });
-  if ( att.responsiveLG ) responsiveOptions.push({ breakpoint: 960, settings: { slidesToShow: att.slidesToShowLG, slidesToScroll: att.slidesToScrollLG } });
-  if ( att.responsiveXL ) responsiveOptions.push({ breakpoint: 1140, settings: { slidesToShow: att.slidesToShowXL, slidesToScroll: att.slidesToScrollXL } });
+  if ( att.responsiveLG ) responsiveOptions.push({ breakpoint: 992, settings: { slidesToShow: att.slidesToShowLG, slidesToScroll: att.slidesToScrollLG } });
+  if ( att.responsiveXL ) responsiveOptions.push({ breakpoint: 1200, settings: { slidesToShow: att.slidesToShowXL, slidesToScroll: att.slidesToScrollXL } });
+  if ( att.responsiveXXL ) responsiveOptions.push({ breakpoint: 1400, settings: { slidesToShow: att.slidesToShowXXL, slidesToScroll: att.slidesToScrollXXL } });
 
   function start() {
     jQuery(slickPath).not('.slick-initialized').slick({
@@ -39,11 +44,12 @@ export function ControlsSetParent(args) {
       dots: att.dots,
       infinite: att.infinite,
       autoplay: att.autoplay,
-      fade: false,
+      fade: att.fade,
       pauseOnHover: att.pauseOnHover,
       pauseOnFocus: att.pauseOnFocus,
       touchMove: false,
       swipeToSlide: false,
+      mobileFirst: true,
       responsive: responsiveOptions,
       centerMode: att.centerMode,
       adaptiveHeight: att.adaptiveHeight,
@@ -70,6 +76,10 @@ export function ControlsSetParent(args) {
   }
 
   useEffect(() => {
+    if ( props.editMode ) stop();
+    else start();
+  });
+  window.addEventListener("resize", () => {
     if ( props.editMode ) stop();
     else start();
   });
@@ -121,8 +131,7 @@ export function ControlsSetParent(args) {
 
       <InspectorControls>
 
-
-        <PanelBody title={__('Slider options')} >
+        <PanelBody title={__('Slides options')} initialOpen={ true }>
           <Button
             icon='edit'
             title='Edit mode'
@@ -133,32 +142,181 @@ export function ControlsSetParent(args) {
           >
             { props.editMode && __('Preview mode') } { !props.editMode && __('Edit mode') }
           </Button>
+          <RangeControl
+            value={ att.slidesToShow }
+            onChange={ (newval) => {
+              if (newval!=1) props.setAttributes( { fade: false } );
+              setSliderAttribute( 'slidesToShow', newval);
+            } }
+            min={ 1 }
+            max={ 12 }
+            label={ __('Default slides to show') }
+          />
+          <RangeControl
+            value={ att.slidesToScroll }
+            onChange={ (newval) => setSliderAttribute( 'slidesToScroll', newval) }
+            min={ 1 }
+            max={ 12 }
+            label={ __('Default slides to scroll') }
+          />
+          <ToggleControl
+            label={__('Disable slider on mobile')}
+            checked={ props.attributes.isUnsilkOnMobile }
+            onChange={ () => setRestartAttribute( 'isUnsilkOnMobile', !props.attributes.isUnsilkOnMobile )  }
+          />
+          {/* small breakpoint */}
+          <CheckboxControl
+            label={__('Add breakpoint'+' SM')}
+            checked={ att.responsiveSM }
+            onChange={ () => {
+              if (att.responsiveSM) props.setAttributes( { fade: false } );
+              setRestartAttribute( 'responsiveSM', !att.responsiveSM );
+            }  }
+          />
+          { att.responsiveSM && (
+            <Fragment>
+              <RangeControl
+                beforeIcon="columns"
+                label={__('Slides to show')}
+                value={ att.slidesToShowSM }
+                onChange={ (newcontent) => setRestartAttribute( 'slidesToShowSM', newcontent )  }
+                min={ 1 }
+                max={ 12 }
+              />
+              <RangeControl
+                beforeIcon="share-alt2"
+                label={__('Slides to scroll')}
+                value={ att.slidesToScrollSM }
+                onChange={ (newcontent) => setRestartAttribute( 'slidesToScrollSM', newcontent )  }
+                min={ 1 }
+                max={ 12 }
+              />
+            </Fragment>
+          )}
+          {/* medium breakpoint */}
+          <CheckboxControl
+            label={__('Add breakpoint'+' MD')}
+            checked={ att.responsiveMD }
+            onChange={ () => {
+              if (att.responsiveSM) props.setAttributes( { fade: false } );
+              setRestartAttribute( 'responsiveMD', !att.responsiveMD );
+            }  }
+          />
+          { att.responsiveMD && (
+            <Fragment>
+              <RangeControl
+                beforeIcon="columns"
+                label={__('Slides to show')}
+                value={ att.slidesToShowMD }
+                onChange={ (newcontent) => {
+                  if (att.responsiveSM) props.setAttributes( { fade: false } );
+                  setRestartAttribute( 'slidesToShowMD', newcontent );
+                }  }
+                min={ 1 }
+                max={ 12 }
+              />
+              <RangeControl
+                beforeIcon="share-alt2"
+                label={__('Slides to scroll')}
+                value={ att.slidesToScrollMD }
+                onChange={ (newcontent) => setRestartAttribute( 'slidesToScrollMD', newcontent )  }
+                min={ 1 }
+                max={ 12 }
+              />
+            </Fragment>
+          )}
+          {/* large breakpoint */}
+          <CheckboxControl
+            label={__('Add breakpoint'+' LG')}
+            checked={ att.responsiveLG }
+            onChange={ () => {
+              if (att.responsiveSM) props.setAttributes( { fade: false } );
+              setRestartAttribute( 'responsiveLG', !att.responsiveLG );
+            }  }
+          />
+          { att.responsiveLG && (
+            <Fragment>
+              <RangeControl
+                beforeIcon="columns"
+                label={__('Slides to show')}
+                value={ att.slidesToShowLG }
+                onChange={ (newcontent) => setRestartAttribute( 'slidesToShowLG', newcontent )  }
+                min={ 1 }
+                max={ 12 }
+              />
+              <RangeControl
+                beforeIcon="share-alt2"
+                label={__('Slides to scroll')}
+                value={ att.slidesToScrollLG }
+                onChange={ (newcontent) => setRestartAttribute( 'slidesToScrollLG', newcontent )  }
+                min={ 1 }
+                max={ 12 }
+              />
+            </Fragment>
+          )}
+          {/* XL breakpoint */}
+          <CheckboxControl
+            label={__('Add breakpoint'+' XL')}
+            checked={ att.responsiveXL }
+            onChange={ () => {
+              if (att.responsiveSM) props.setAttributes( { fade: false } );
+              setRestartAttribute( 'responsiveXL', !att.responsiveXL );
+            }  }
+          />
+          { att.responsiveXL && (
+            <Fragment>
+              <RangeControl
+                beforeIcon="columns"
+                label={__('Slides to show')}
+                value={ att.slidesToShowXL }
+                onChange={ (newcontent) => setRestartAttribute( 'slidesToShowXL', newcontent )  }
+                min={ 1 }
+                max={ 12 }
+              />
+              <RangeControl
+                beforeIcon="share-alt2"
+                label={__('Slides to scroll')}
+                value={ att.slidesToScrollXL }
+                onChange={ (newcontent) => setRestartAttribute( 'slidesToScrollXL', newcontent )  }
+                min={ 1 }
+                max={ 12 }
+              />
+            </Fragment>
+          )}
+          {/* XXL breakpoint */}
+          <CheckboxControl
+            label={__('Add breakpoint'+' XXL')}
+            checked={ att.responsiveXXL }
+            onChange={ () => {
+              if (att.responsiveSM) props.setAttributes( { fade: false } );
+              setRestartAttribute( 'responsiveXXL', !att.responsiveXXL );
+            }  }
+          />
+          { att.responsiveXXL && (
+            <Fragment>
+              <RangeControl
+                beforeIcon="columns"
+                label={__('Slides to show')}
+                value={ att.slidesToShowXXL }
+                onChange={ (newcontent) => setRestartAttribute( 'slidesToShowXXL', newcontent )  }
+                min={ 1 }
+                max={ 12 }
+              />
+              <RangeControl
+                beforeIcon="share-alt2"
+                label={__('Slides to scroll')}
+                value={ att.slidesToScrollXXL }
+                onChange={ (newcontent) => setRestartAttribute( 'slidesToScrollXXL', newcontent )  }
+                min={ 1 }
+                max={ 12 }
+              />
+            </Fragment>
+          )}
+        </PanelBody>
+
+
+        <PanelBody title={__('Slider options')}  initialOpen={ true }>
           <Fragment>
-            <RangeControl
-              value={ att.minHeight }
-              onChange={ ( newvalue ) => props.setAttributes( { minHeight: newvalue } ) }
-              min={ 0 }
-              max={ 50 }
-              label={ __('Slide body min height'+' (Rem)') }
-              type="Rem"
-            />
-            <RangeControl
-              value={ att.slidesToShow }
-              onChange={ (newval) => {
-                if (newval!=1) props.setAttributes( { fade: false } );
-                setSliderAttribute( 'slidesToShow', newval);
-              } }
-              min={ 1 }
-              max={ 12 }
-              label={ __('Slides to Show') }
-            />
-            <RangeControl
-              value={ att.slidesToScroll }
-              onChange={ (newval) => setSliderAttribute( 'slidesToScroll', newval) }
-              min={ 1 }
-              max={ 12 }
-              label={ __('Slides to Scroll') }
-            />
             <ToggleControl
               label={__('Arrows')}
               checked={ att.arrows }
@@ -188,9 +346,10 @@ export function ControlsSetParent(args) {
               label={__('Fade')}
               checked={ att.fade }
               onChange={ () => {
+                props.setAttributes( { responsiveSM: false, responsiveMD: false, responsiveLG: false, responsiveXL: false } );
                 setSliderAttribute( 'slidesToShow', 1);
-                setSliderAttribute( 'slidesToScroll', 1)
-                props.setAttributes( { fade: !att.fade, responsiveSM: false, responsiveMD: false, responsiveLG: false, responsiveXL: false } );
+                setSliderAttribute( 'slidesToScroll', 1);
+                setRestartAttribute( 'fade', !att.fade );
               } }
             />
             <ToggleControl
@@ -212,6 +371,33 @@ export function ControlsSetParent(args) {
         </PanelBody>
 
 
+        <PanelBody title={__('Style options')} initialOpen={ false }>
+          <RangeControl
+            value={ att.minHeight }
+            onChange={ ( newvalue ) => props.setAttributes( { minHeight: newvalue } ) }
+            min={ 0 }
+            max={ 50 }
+            label={ __('Slide body min height'+' (Rem)') }
+            type="Rem"
+          />
+          <RangeControl
+            value={ props.attributes.slidePadding }
+            onChange={ ( newvalue ) => setRestartAttribute( 'slidePadding', newvalue ) }
+            min={ 0 }
+            max={ 12 }
+            step={ 0.01 }
+            label={ __('Margin beetweeen slides (0.01 Rem)') }
+          />
+          { props.attributes.slidePadding != 0 &&
+            <CheckboxControl
+              label={__('Align slide padding to edjes')}
+              checked={ props.attributes.isSlidePaddingAlign }
+              onChange={ () => setRestartAttribute( 'isSlidePaddingAlign', !props.attributes.isSlidePaddingAlign )  }
+            />
+          }
+        </PanelBody>
+
+
         <SliderControlsPannel
           arrows={ att.arrows }
           arrowsColorClass={ att.arrowsColorClass }
@@ -230,129 +416,6 @@ export function ControlsSetParent(args) {
           isControlsCustom={ att.isControlsCustom }
           setIsControlsCustom={ (val) => props.setAttributes({ isControlsCustom: val }) }
         />
-
-
-        <PanelBody title={__('Responsive options')} initialOpen={ false }>
-          {/* small breakpoint */}
-          <CheckboxControl
-            label={__('Add breakpoint'+' SM')}
-            checked={ att.responsiveSM }
-            onChange={ () => {
-              if (att.responsiveSM) props.setAttributes( { fade: false } );
-              setRestartAttribute( 'responsiveSM', !att.responsiveSM );
-            }  }
-          />
-          { att.responsiveSM && (
-            <Fragment>
-              <RangeControl
-                beforeIcon="columns"
-                label={__('Slides to show')}
-                value={ att.slidesToShowSM }
-                onChange={ (newcontent) => setRestartAttribute( 'slidesToShowSM', newcontent )  }
-                min={ 1 }
-                max={ 10 }
-              />
-              <RangeControl
-                beforeIcon="share-alt2"
-                label={__('Slides to scroll')}
-                value={ att.slidesToScrollSM }
-                onChange={ (newcontent) => setRestartAttribute( 'slidesToScrollSM', newcontent )  }
-                min={ 1 }
-                max={ 10 }
-              />
-            </Fragment>
-          )}
-          {/* medium breakpoint */}
-          <CheckboxControl
-            label={__('Add breakpoint'+' MD')}
-            checked={ att.responsiveMD }
-            onChange={ () => {
-              if (att.responsiveSM) props.setAttributes( { fade: false } );
-              setRestartAttribute( 'responsiveMD', !att.responsiveMD );
-            }  }
-          />
-          { att.responsiveMD && (
-            <Fragment>
-              <RangeControl
-                beforeIcon="columns"
-                label={__('Slides to show')}
-                value={ att.slidesToShowMD }
-                onChange={ (newcontent) => {
-                  if (att.responsiveSM) props.setAttributes( { fade: false } );
-                  setRestartAttribute( 'slidesToShowMD', newcontent );
-                }  }
-                min={ 1 }
-                max={ 10 }
-              />
-              <RangeControl
-                beforeIcon="share-alt2"
-                label={__('Slides to scroll')}
-                value={ att.slidesToScrollMD }
-                onChange={ (newcontent) => setRestartAttribute( 'slidesToScrollMD', newcontent )  }
-                min={ 1 }
-                max={ 10 }
-              />
-            </Fragment>
-          )}
-          {/* large breakpoint */}
-          <CheckboxControl
-            label={__('Add breakpoint'+' LG')}
-            checked={ att.responsiveLG }
-            onChange={ () => {
-              if (att.responsiveSM) props.setAttributes( { fade: false } );
-              setRestartAttribute( 'responsiveLG', !att.responsiveLG );
-            }  }
-          />
-          { att.responsiveLG && (
-            <Fragment>
-              <RangeControl
-                beforeIcon="columns"
-                label={__('Slides to show')}
-                value={ att.slidesToShowLG }
-                onChange={ (newcontent) => setRestartAttribute( 'slidesToShowLG', newcontent )  }
-                min={ 1 }
-                max={ 10 }
-              />
-              <RangeControl
-                beforeIcon="share-alt2"
-                label={__('Slides to scroll')}
-                value={ att.slidesToScrollLG }
-                onChange={ (newcontent) => setRestartAttribute( 'slidesToScrollLG', newcontent )  }
-                min={ 1 }
-                max={ 10 }
-              />
-            </Fragment>
-          )}
-          {/* XL breakpoint */}
-          <CheckboxControl
-            label={__('Add breakpoint'+' XL')}
-            checked={ att.responsiveXL }
-            onChange={ () => {
-              if (att.responsiveSM) props.setAttributes( { fade: false } );
-              setRestartAttribute( 'responsiveXL', !att.responsiveXL );
-            }  }
-          />
-          { att.responsiveXL && (
-            <Fragment>
-              <RangeControl
-                beforeIcon="columns"
-                label={__('Slides to show')}
-                value={ att.slidesToShowXL }
-                onChange={ (newcontent) => setRestartAttribute( 'slidesToShowXL', newcontent )  }
-                min={ 1 }
-                max={ 10 }
-              />
-              <RangeControl
-                beforeIcon="share-alt2"
-                label={__('Slides to scroll')}
-                value={ att.slidesToScrollXL }
-                onChange={ (newcontent) => setRestartAttribute( 'slidesToScrollXL', newcontent )  }
-                min={ 1 }
-                max={ 10 }
-              />
-            </Fragment>
-          )}
-        </PanelBody>
 
 
       </InspectorControls>

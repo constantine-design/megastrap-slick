@@ -26,13 +26,12 @@
 .slick-prev.slick-disabled:before, .slick-next.slick-disabled:before {
     opacity: 0.25;
 }
-.slick-dots {
+ul.slick-dots {
     position: absolute;
     bottom: -30px;
-		line-height: 30px;
     list-style: none;
-    display: block;
-    text-align: center;
+    display: flex;
+    justify-content: center;
     padding: 0;
     margin: 0;
     left: 0;
@@ -41,47 +40,46 @@
 .dots-inner .slick-dots { bottom: 0px; }
 .slick-dots li {
     position: relative;
-    display: inline-block;
-    height: 20px;
-    width: 20px;
-    margin: 0 5px;
+    display: inline;
     padding: 0;
+    margin: 0;
     cursor: pointer;
 }
 .slick-dots li button {
+    position: relative;
+    height: 30px;
+    width: 23px;
     border: 0;
     background: transparent;
     display: block;
-    height: 20px;
-    width: 20px;
     outline: none;
-    line-height: 20px;
     font-size: 0px;
     color: transparent;
-    padding: 5px;
     cursor: pointer;
 }
 .slick-dots li button:hover, .slick-dots li button:focus { outline: none; }
 .slick-dots li button:hover:before, .slick-dots li button:focus:before { opacity: 1; }
 .slick-dots li button:before {
     position: absolute;
-    top: 0;
-    left: 0;
-    content: '⬤';
-    width: 20px;
-    height: 20px;
-    font-size: 10px;
-    line-height: 20px;
-    text-align: center;
+    content: '';
+    top: 50%;
+    left: 50%;
+    transform: translate( -50%, -50% );
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: currentColor;
     color: #000;
-		text-shadow: 0 0 3px #ffffff;
+		box-shadow: 0 0 3px #ffffff;
     opacity: 0.25;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
-.small-dots .slick-dots li button:before { font-size: 7px; }
-.big-dots .slick-dots li button:before { font-size: 14px; }
-.light-dots .slick-dots li button:before { color: #ffffff; text-shadow: 0 0 2px #1d1d1d; }
+.small-dots .slick-dots li button { width: 18px; }
+.small-dots .slick-dots li button:before { width: 5px; height: 5px; }
+.big-dots .slick-dots li button { width: 28px; }
+.big-dots .slick-dots li button:before { width: 9px; height: 9px; }
+.light-dots .slick-dots li button:before { color: #ffffff; box-shadow: 0 0 3px #1d1d1d; }
 .slick-dots li.slick-active button:before { opacity: 0.75; }
 
 /* arrows positioning & styling
@@ -89,8 +87,8 @@
 .slick-prev:before, .slick-next:before {
 	content: "";
 	position: absolute;
-	width: 0.8rem;
-	height: 0.8rem;
+	width: 0.75rem;
+	height: 0.75rem;
 	border: solid #222222;
 	border-width: 0 2px 2px 0;
 	display: inline-block;
@@ -112,13 +110,17 @@
 /* small */
 .small-arrows .slick-prev:before, .small-arrows .slick-next:before { width: 0.5rem; height: 0.5rem; top: 0.65rem; }
 /* big arrows */
-.big-arrows .slick-prev:before, .big-arrows .slick-next:before { width: 1.1rem; height: 1.1rem; top: 0.4rem; }
+.big-arrows .slick-prev:before, .big-arrows .slick-next:before { width: 1rem; height: 1rem; top: 0.4rem; }
 /* light theme */
 .light-arrows .slick-prev:before, .light-arrows .slick-next:before { border-color: #ffffff; box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, .3); }
 
 .slick-prev, .slick-next { top: 50%; transform: translate(0, -50%); }
-.slick-prev { left: -30px; }
-.slick-next { right: -30px; }
+.slick-prev { left: -25px; }
+.slick-next { right: -25px; }
+@media (max-width:575px) {
+  .slick-prev { left: -20px; }
+  .slick-next { right: -20px; }
+}
 
 .arrows-inner .slick-prev { left: 0; z-index: 1; }
 .arrows-inner .slick-next { right: 0; z-index: 1; }
@@ -145,7 +147,8 @@
   margin-bottom: 1.9rem;
 }
 /* case dots and arrows at bottom */
-.arrows-bottom:not(.custom-controls).has-arrows:not(.dots-inner).has-dots .slick-slider {
+.arrows-bottom:not(.custom-controls).has-arrows:not(.dots-inner).has-dots .slick-slider,
+.arrows-bottom:not(.custom-controls).has-arrows:not(.dots-inner).has-dots .k-slider:not(.slick-initialized) {
   margin-bottom: calc(30px + 1.9rem);
 }
 .arrows-bottom:not(.dots-inner).has-dots .slick-slider .slick-next,
@@ -153,7 +156,10 @@
   bottom: calc( (1.9rem + 30px)*-1 );
 }
 
-.has-dots:not(.custom-controls) .slick-slider { margin-bottom: 30px; }
+.has-dots:not(.custom-controls) .slick-slider,
+.has-dots:not(.custom-controls) .k-slider:not(.slick-initialized) {
+  margin-bottom: 30px;
+}
 .dots-inner.has-dots .slick-slider { margin-bottom: 0px; }
 
 
@@ -200,3 +206,16 @@ figure.k-block-slick-classic-item, .editor-styles-wrapper figure.k-block-slick-c
 .k-blocks-slick-html-inner-content.row.align-items-start { align-items: flex-start; align-content: flex-start; }
 .k-blocks-slick-html-inner-content.row.align-items-center { align-items: center; align-content: center; }
 .k-blocks-slick-html-inner-content.row.align-items-end { align-items: flex-end; align-content: flex-end; }
+
+
+/* Styling scrollbar for desktop browser
+--------------------------------------------------------*/
+.hero-gallery::-webkit-scrollbar {
+  width: 2em;
+}
+.hero-gallery::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+.hero-gallery::-webkit-scrollbar-thumb {
+  background: orange;
+}

@@ -30,13 +30,14 @@ function addValignClass(props) {  return ( props.attributes.valign ? " "+props.a
 
 /* common functions */
 function bsGetColClasses(props) {
-  let classes = "";
+  let classes = " col";
   if ( props.attributes.colBreakpoint!=0 ) classes += " col-"+props.attributes.colBreakpoint;
   if ( props.attributes.colSmBreakpoint!=0 ) classes += " col-sm-"+props.attributes.colSmBreakpoint;
   if ( props.attributes.colMdBreakpoint!=0 ) classes += " col-md-"+props.attributes.colMdBreakpoint;
   if ( props.attributes.colLgBreakpoint!=0 ) classes += " col-lg-"+props.attributes.colLgBreakpoint;
   if ( props.attributes.colXlBreakpoint!=0 ) classes += " col-xl-"+props.attributes.colXlBreakpoint;
-  if ( classes == "" )  classes = " col";
+  if ( props.attributes.colXXlBreakpoint!=0 ) classes += " col-xxl-"+props.attributes.colXXlBreakpoint;
+  //if ( classes == "" )  classes = " col";
   return classes;
 }
 
@@ -55,6 +56,7 @@ registerBlockType( 'k-blocks-bs-grid-child/k-blocks', {
     colMdBreakpoint: { type: 'number', default: 0 },
     colLgBreakpoint: { type: 'number', default: 0 },
     colXlBreakpoint: { type: 'number', default: 0 },
+    colXXlBreakpoint: { type: 'number', default: 0 },
     /* colors */
     color: { type: 'string', default: '', },
     bgColor: { type: 'string', default: '', },

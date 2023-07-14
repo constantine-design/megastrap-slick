@@ -49,7 +49,8 @@ function Controls(args) {
       FlexItem = _wp$components.FlexItem,
       Flex = _wp$components.Flex,
       ColorIndicator = _wp$components.ColorIndicator,
-      ButtonGroup = _wp$components.ButtonGroup;
+      ButtonGroup = _wp$components.ButtonGroup,
+      Notice = _wp$components.Notice;
   var _wp$element = wp.element,
       useState = _wp$element.useState,
       useEffect = _wp$element.useEffect,
@@ -67,6 +68,14 @@ function Controls(args) {
   }
   function start() {
     var responsiveOptions = [];
+    if (props.attributes.isUnsilkOnMobile) {
+      responsiveOptions.push({
+        breakpoint: 1, settings: 'unslick'
+      });
+      responsiveOptions.push({
+        breakpoint: 480, settings: { slidesToShow: props.attributes.slidesToShow, slidesToScroll: props.attributes.slidesToScroll }
+      });
+    }
     if (props.attributes.responsiveSM) responsiveOptions.push({
       breakpoint: 576, settings: { slidesToShow: props.attributes.slidesToShowSM, slidesToScroll: props.attributes.slidesToScrollSM }
     });
@@ -74,10 +83,13 @@ function Controls(args) {
       breakpoint: 768, settings: { slidesToShow: props.attributes.slidesToShowMD, slidesToScroll: props.attributes.slidesToScrollMD }
     });
     if (props.attributes.responsiveLG) responsiveOptions.push({
-      breakpoint: 960, settings: { slidesToShow: props.attributes.slidesToShowLG, slidesToScroll: props.attributes.slidesToScrollLG }
+      breakpoint: 992, settings: { slidesToShow: props.attributes.slidesToShowLG, slidesToScroll: props.attributes.slidesToScrollLG }
     });
     if (props.attributes.responsiveXL) responsiveOptions.push({
-      breakpoint: 1140, settings: { slidesToShow: props.attributes.slidesToShowXL, slidesToScroll: props.attributes.slidesToScrollXL }
+      breakpoint: 1200, settings: { slidesToShow: props.attributes.slidesToShowXL, slidesToScroll: props.attributes.slidesToScrollXL }
+    });
+    if (props.attributes.responsiveXXL) responsiveOptions.push({
+      breakpoint: 1400, settings: { slidesToShow: props.attributes.slidesToShowXXL, slidesToScroll: props.attributes.slidesToScrollXXL }
     });
     jQuery("#img-gallery-" + props.clientId).not('.slick-initialized').slick({
       slidesToShow: props.attributes.slidesToShow,
@@ -89,15 +101,16 @@ function Controls(args) {
       centerMode: props.attributes.centerMode,
       adaptiveHeight: props.attributes.adaptiveHeight,
       variableWidth: props.attributes.variableWidth,
+      pauseOnHover: props.attributes.pauseOnHover,
       fade: props.attributes.fade,
+      mobileFirst: true,
       responsive: responsiveOptions
-    });
-    jQuery(document).on('click', '#img-gallery-' + props.clientId + ' [data-toggle="lightbox"]', function (event) {
-      event.preventDefault();
-      jQuery(this).ekkoLightbox();
     });
   }
   useEffect(function () {
+    if (prevent_start != true) start();
+  });
+  window.addEventListener("resize", function () {
     if (prevent_start != true) start();
   });
 
@@ -183,64 +196,193 @@ function Controls(args) {
       null,
       wp.element.createElement(
         PanelBody,
-        { title: __('Style options'), initialOpen: false },
-        wp.element.createElement(SelectControl, {
-          label: 'Slider image size',
-          options: [{ label: 'Thumbnail', value: 'THUMB' }, { label: 'Medium', value: 'MEDIUM' }, { label: 'Large', value: 'LARGE' }, { label: 'Full size', value: 'FULL' }],
-          value: props.attributes.sliderImageSize,
-          onChange: function onChange(newcontent) {
-            return safelySetAttribute('sliderImageSize', newcontent);
-          }
-        }),
-        props.attributes.openInModal && wp.element.createElement(SelectControl, {
-          label: 'Modal image size',
-          options: [{ label: 'Thumbnail', value: 'THUMB' }, { label: 'Medium', value: 'MEDIUM' }, { label: 'Large', value: 'LARGE' }, { label: 'Full size', value: 'FULL' }],
-          value: props.attributes.modalImageSize,
-          onChange: function onChange(newcontent) {
-            return safelySetAttribute('modalImageSize', newcontent);
-          }
-        }),
-        wp.element.createElement(ToggleControl, {
-          label: __('Show caption'),
-          checked: props.attributes.showCaption,
-          onChange: function onChange() {
-            return safelySetAttribute('showCaption', !props.attributes.showCaption);
-          }
-        }),
-        wp.element.createElement(RangeControl, {
-          value: props.attributes.slidePadding,
-          onChange: function onChange(newvalue) {
-            return safelySetAttribute('slidePadding', newvalue);
-          },
-          min: 0,
-          max: 5,
-          step: '0.1',
-          label: __('Margin beetweeen slides (0.1Rem)')
-        })
-      ),
-      wp.element.createElement(
-        PanelBody,
-        { title: __('Default full screen options') },
+        { title: __('Slides options'), initialOpen: true },
         wp.element.createElement(RangeControl, {
           beforeIcon: 'columns',
-          label: __('Slides to show'),
+          label: __('Default slides to show'),
           value: props.attributes.slidesToShow,
           onChange: function onChange(newcontent) {
             return safelySetAttribute('slidesToShow', newcontent);
           },
           min: 1,
-          max: 10
+          max: 12
         }),
         wp.element.createElement(RangeControl, {
           beforeIcon: 'share-alt2',
-          label: __('Slides to scroll'),
+          label: __('Default slides to scroll'),
           value: props.attributes.slidesToScroll,
           onChange: function onChange(newcontent) {
             return safelySetAttribute('slidesToScroll', newcontent);
           },
           min: 1,
-          max: 10
+          max: 12
         }),
+        wp.element.createElement(ToggleControl, {
+          label: __('Disable slider on mobile'),
+          checked: props.attributes.isUnsilkOnMobile,
+          onChange: function onChange() {
+            return safelySetAttribute('isUnsilkOnMobile', !props.attributes.isUnsilkOnMobile);
+          }
+        }),
+        wp.element.createElement(CheckboxControl, {
+          label: __('Add breakpoint' + ' SM'),
+          checked: props.attributes.responsiveSM,
+          onChange: function onChange() {
+            return safelySetAttribute('responsiveSM', !props.attributes.responsiveSM);
+          }
+        }),
+        props.attributes.responsiveSM && wp.element.createElement(
+          Fragment,
+          null,
+          wp.element.createElement(RangeControl, {
+            beforeIcon: 'columns',
+            label: __('Slides to show'),
+            value: props.attributes.slidesToShowSM,
+            onChange: function onChange(newcontent) {
+              return safelySetAttribute('slidesToShowSM', newcontent);
+            },
+            min: 1,
+            max: 12
+          }),
+          wp.element.createElement(RangeControl, {
+            beforeIcon: 'share-alt2',
+            label: __('Slides to scroll'),
+            value: props.attributes.slidesToScrollSM,
+            onChange: function onChange(newcontent) {
+              return safelySetAttribute('slidesToScrollSM', newcontent);
+            },
+            min: 1,
+            max: 12
+          })
+        ),
+        wp.element.createElement(CheckboxControl, {
+          label: __('Add breakpoint' + ' MD'),
+          checked: props.attributes.responsiveMD,
+          onChange: function onChange() {
+            return safelySetAttribute('responsiveMD', !props.attributes.responsiveMD);
+          }
+        }),
+        props.attributes.responsiveMD && wp.element.createElement(
+          Fragment,
+          null,
+          wp.element.createElement(RangeControl, {
+            beforeIcon: 'columns',
+            label: __('Slides to show'),
+            value: props.attributes.slidesToShowMD,
+            onChange: function onChange(newcontent) {
+              return safelySetAttribute('slidesToShowMD', newcontent);
+            },
+            min: 1,
+            max: 12
+          }),
+          wp.element.createElement(RangeControl, {
+            beforeIcon: 'share-alt2',
+            label: __('Slides to scroll'),
+            value: props.attributes.slidesToScrollMD,
+            onChange: function onChange(newcontent) {
+              return safelySetAttribute('slidesToScrollMD', newcontent);
+            },
+            min: 1,
+            max: 12
+          })
+        ),
+        wp.element.createElement(CheckboxControl, {
+          label: __('Add breakpoint' + ' LG'),
+          checked: props.attributes.responsiveLG,
+          onChange: function onChange() {
+            return safelySetAttribute('responsiveLG', !props.attributes.responsiveLG);
+          }
+        }),
+        props.attributes.responsiveLG && wp.element.createElement(
+          Fragment,
+          null,
+          wp.element.createElement(RangeControl, {
+            beforeIcon: 'columns',
+            label: __('Slides to show'),
+            value: props.attributes.slidesToShowLG,
+            onChange: function onChange(newcontent) {
+              return safelySetAttribute('slidesToShowLG', newcontent);
+            },
+            min: 1,
+            max: 12
+          }),
+          wp.element.createElement(RangeControl, {
+            beforeIcon: 'share-alt2',
+            label: __('Slides to scroll'),
+            value: props.attributes.slidesToScrollLG,
+            onChange: function onChange(newcontent) {
+              return safelySetAttribute('slidesToScrollLG', newcontent);
+            },
+            min: 1,
+            max: 12
+          })
+        ),
+        wp.element.createElement(CheckboxControl, {
+          label: __('Add breakpoint' + ' XL'),
+          checked: props.attributes.responsiveXL,
+          onChange: function onChange() {
+            return safelySetAttribute('responsiveXL', !props.attributes.responsiveXL);
+          }
+        }),
+        props.attributes.responsiveXL && wp.element.createElement(
+          Fragment,
+          null,
+          wp.element.createElement(RangeControl, {
+            beforeIcon: 'columns',
+            label: __('Slides to show'),
+            value: props.attributes.slidesToShowXL,
+            onChange: function onChange(newcontent) {
+              return safelySetAttribute('slidesToShowXL', newcontent);
+            },
+            min: 1,
+            max: 12
+          }),
+          wp.element.createElement(RangeControl, {
+            beforeIcon: 'share-alt2',
+            label: __('Slides to scroll'),
+            value: props.attributes.slidesToScrollXL,
+            onChange: function onChange(newcontent) {
+              return safelySetAttribute('slidesToScrollXL', newcontent);
+            },
+            min: 1,
+            max: 12
+          })
+        ),
+        wp.element.createElement(CheckboxControl, {
+          label: __('Add breakpoint' + ' XXL'),
+          checked: props.attributes.responsiveXXL,
+          onChange: function onChange() {
+            return safelySetAttribute('responsiveXXL', !props.attributes.responsiveXXL);
+          }
+        }),
+        props.attributes.responsiveXXL && wp.element.createElement(
+          Fragment,
+          null,
+          wp.element.createElement(RangeControl, {
+            beforeIcon: 'columns',
+            label: __('Slides to show'),
+            value: props.attributes.slidesToShowXXL,
+            onChange: function onChange(newcontent) {
+              return safelySetAttribute('slidesToShowXXL', newcontent);
+            },
+            min: 1,
+            max: 12
+          }),
+          wp.element.createElement(RangeControl, {
+            beforeIcon: 'share-alt2',
+            label: __('Slides to scroll'),
+            value: props.attributes.slidesToScrollXXL,
+            onChange: function onChange(newcontent) {
+              return safelySetAttribute('slidesToScrollXXL', newcontent);
+            },
+            min: 1,
+            max: 12
+          })
+        )
+      ),
+      wp.element.createElement(
+        PanelBody,
+        { title: __('Slider options'), initialOpen: true },
         wp.element.createElement(ToggleControl, {
           label: __('Arrows'),
           checked: props.attributes.arrows,
@@ -284,6 +426,13 @@ function Controls(args) {
           }
         }),
         wp.element.createElement(ToggleControl, {
+          label: __('Pause On Hoover'),
+          checked: props.attributes.pauseOnHover,
+          onChange: function onChange() {
+            return safelySetAttribute('pauseOnHover', !props.attributes.pauseOnHover);
+          }
+        }),
+        wp.element.createElement(ToggleControl, {
           label: __('Variable Width'),
           checked: props.attributes.variableWidth,
           onChange: function onChange() {
@@ -295,6 +444,82 @@ function Controls(args) {
           checked: props.attributes.fade,
           onChange: function onChange() {
             return safelySetAttribute('fade', !props.attributes.fade);
+          }
+        })
+      ),
+      wp.element.createElement(
+        PanelBody,
+        { title: __('Style options'), initialOpen: false },
+        wp.element.createElement(SelectControl, {
+          label: 'Slider image size',
+          options: [{ label: 'Thumbnail', value: 'THUMB' }, { label: 'Medium', value: 'MEDIUM' }, { label: 'Large', value: 'LARGE' }, { label: 'Full size', value: 'FULL' }],
+          value: props.attributes.sliderImageSize,
+          onChange: function onChange(newcontent) {
+            return safelySetAttribute('sliderImageSize', newcontent);
+          }
+        }),
+        props.attributes.openInModal && wp.element.createElement(SelectControl, {
+          label: 'Modal image size',
+          options: [{ label: 'Thumbnail', value: 'THUMB' }, { label: 'Medium', value: 'MEDIUM' }, { label: 'Large', value: 'LARGE' }, { label: 'Full size', value: 'FULL' }],
+          value: props.attributes.modalImageSize,
+          onChange: function onChange(newcontent) {
+            return safelySetAttribute('modalImageSize', newcontent);
+          }
+        }),
+        wp.element.createElement(ToggleControl, {
+          label: __('Show caption'),
+          checked: props.attributes.showCaption,
+          onChange: function onChange() {
+            safelySetAttribute('showCaption', !props.attributes.showCaption);safelySetAttribute('captionAsUrl', false);
+          }
+        }),
+        wp.element.createElement(ToggleControl, {
+          label: __('Use caption text as link URL'),
+          checked: props.attributes.captionAsUrl,
+          onChange: function onChange() {
+            safelySetAttribute('captionAsUrl', !props.attributes.captionAsUrl);safelySetAttribute('showCaption', false);
+          }
+        }),
+        props.attributes.captionAsUrl && wp.element.createElement(
+          'div',
+          { className: 'k-slider-custom-controls' },
+          wp.element.createElement(
+            Notice,
+            { status: 'warning', isDismissible: false },
+            wp.element.createElement(
+              'div',
+              { style: { fontSize: '12px' } },
+              'Edit gallery captions and add valid URL link starting with ',
+              wp.element.createElement(
+                'b',
+                null,
+                'https://'
+              ),
+              ' or ',
+              wp.element.createElement(
+                'b',
+                null,
+                'http://'
+              ),
+              ' links without prefix would be rejected'
+            )
+          )
+        ),
+        wp.element.createElement(RangeControl, {
+          value: props.attributes.slidePadding,
+          onChange: function onChange(newvalue) {
+            return safelySetAttribute('slidePadding', newvalue);
+          },
+          min: 0,
+          max: 12,
+          step: 0.01,
+          label: __('Margin beetweeen slides (0.01 Rem)')
+        }),
+        props.attributes.slidePadding != 0 && wp.element.createElement(CheckboxControl, {
+          label: __('Align slide padding to edjes'),
+          checked: props.attributes.isSlidePaddingAlign,
+          onChange: function onChange() {
+            return safelySetAttribute('isSlidePaddingAlign', !props.attributes.isSlidePaddingAlign);
           }
         })
       ),
@@ -329,135 +554,7 @@ function Controls(args) {
         setIsControlsCustom: function setIsControlsCustom(val) {
           return props.setAttributes({ isControlsCustom: val });
         }
-      }),
-      wp.element.createElement(
-        PanelBody,
-        { title: __('Responsive options'), initialOpen: false },
-        wp.element.createElement(CheckboxControl, {
-          label: __('Add breakpoint' + ' SM'),
-          checked: props.attributes.responsiveSM,
-          onChange: function onChange() {
-            return safelySetAttribute('responsiveSM', !props.attributes.responsiveSM);
-          }
-        }),
-        props.attributes.responsiveSM && wp.element.createElement(
-          Fragment,
-          null,
-          wp.element.createElement(RangeControl, {
-            beforeIcon: 'columns',
-            label: __('Slides to show'),
-            value: props.attributes.slidesToShowSM,
-            onChange: function onChange(newcontent) {
-              return safelySetAttribute('slidesToShowSM', newcontent);
-            },
-            min: 1,
-            max: 10
-          }),
-          wp.element.createElement(RangeControl, {
-            beforeIcon: 'share-alt2',
-            label: __('Slides to scroll'),
-            value: props.attributes.slidesToScrollSM,
-            onChange: function onChange(newcontent) {
-              return safelySetAttribute('slidesToScrollSM', newcontent);
-            },
-            min: 1,
-            max: 10
-          })
-        ),
-        wp.element.createElement(CheckboxControl, {
-          label: __('Add breakpoint' + ' MD'),
-          checked: props.attributes.responsiveMD,
-          onChange: function onChange() {
-            return safelySetAttribute('responsiveMD', !props.attributes.responsiveMD);
-          }
-        }),
-        props.attributes.responsiveMD && wp.element.createElement(
-          Fragment,
-          null,
-          wp.element.createElement(RangeControl, {
-            beforeIcon: 'columns',
-            label: __('Slides to show'),
-            value: props.attributes.slidesToShowMD,
-            onChange: function onChange(newcontent) {
-              return safelySetAttribute('slidesToShowMD', newcontent);
-            },
-            min: 1,
-            max: 10
-          }),
-          wp.element.createElement(RangeControl, {
-            beforeIcon: 'share-alt2',
-            label: __('Slides to scroll'),
-            value: props.attributes.slidesToScrollMD,
-            onChange: function onChange(newcontent) {
-              return safelySetAttribute('slidesToScrollMD', newcontent);
-            },
-            min: 1,
-            max: 10
-          })
-        ),
-        wp.element.createElement(CheckboxControl, {
-          label: __('Add breakpoint' + ' LG'),
-          checked: props.attributes.responsiveLG,
-          onChange: function onChange() {
-            return safelySetAttribute('responsiveLG', !props.attributes.responsiveLG);
-          }
-        }),
-        props.attributes.responsiveLG && wp.element.createElement(
-          Fragment,
-          null,
-          wp.element.createElement(RangeControl, {
-            beforeIcon: 'columns',
-            label: __('Slides to show'),
-            value: props.attributes.slidesToShowLG,
-            onChange: function onChange(newcontent) {
-              return safelySetAttribute('slidesToShowLG', newcontent);
-            },
-            min: 1,
-            max: 10
-          }),
-          wp.element.createElement(RangeControl, {
-            beforeIcon: 'share-alt2',
-            label: __('Slides to scroll'),
-            value: props.attributes.slidesToScrollLG,
-            onChange: function onChange(newcontent) {
-              return safelySetAttribute('slidesToScrollLG', newcontent);
-            },
-            min: 1,
-            max: 10
-          })
-        ),
-        wp.element.createElement(CheckboxControl, {
-          label: __('Add breakpoint' + ' XL'),
-          checked: props.attributes.responsiveXL,
-          onChange: function onChange() {
-            return safelySetAttribute('responsiveXL', !props.attributes.responsiveXL);
-          }
-        }),
-        props.attributes.responsiveXL && wp.element.createElement(
-          Fragment,
-          null,
-          wp.element.createElement(RangeControl, {
-            beforeIcon: 'columns',
-            label: __('Slides to show'),
-            value: props.attributes.slidesToShowXL,
-            onChange: function onChange(newcontent) {
-              return safelySetAttribute('slidesToShowXL', newcontent);
-            },
-            min: 1,
-            max: 10
-          }),
-          wp.element.createElement(RangeControl, {
-            beforeIcon: 'share-alt2',
-            label: __('Slides to scroll'),
-            value: props.attributes.slidesToScrollXL,
-            onChange: function onChange(newcontent) {
-              return safelySetAttribute('slidesToScrollXL', newcontent);
-            },
-            min: 1,
-            max: 10
-          })
-        )
-      )
+      })
     )
   );
 }

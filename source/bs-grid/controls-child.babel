@@ -106,6 +106,21 @@ export function ControlsChild(args) {
               </FlexBlock>
             </Flex>
 
+            <Flex style={ { paddingLeft: '0.8rem', paddingRight: '0.8rem' } } >
+              <FlexItem className="k-bs-grid-cols-selector" style={ { paddingTop: '0.6rem', paddingBottom: '0.6rem' } } >
+                <CheckboxControl label={ "XXL" } checked={ Boolean(atts.colXXlBreakpoint) }
+                  onChange={ () => { if (Boolean(atts.colXXlBreakpoint)) props.setAttributes({ colXXlBreakpoint: 0 }); else props.setAttributes({ colXXlBreakpoint: 6 }); } }
+                />
+              </FlexItem>
+              <FlexBlock className="k-bs-grid-cols-range">
+                { Boolean(atts.colXXlBreakpoint) && (
+                  <RangeControl value={ atts.colXXlBreakpoint } min={ 1 } max={ 12 }
+                    onChange={ ( newvalue ) => props.setAttributes( { colXXlBreakpoint: newvalue }) }
+                  />
+                )}
+              </FlexBlock>
+            </Flex>
+
           </div>
         </PanelBody>
         <PannelUltimateBgControl

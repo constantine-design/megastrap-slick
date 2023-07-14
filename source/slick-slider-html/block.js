@@ -12,6 +12,8 @@ var _controlsParent = require('./controls-parent.js');
 
 var _controlsChild = require('./controls-child.js');
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 /** @jsx wp.element.createElement */
 
 var __ = wp.i18n.__;
@@ -111,7 +113,7 @@ registerBlockType('k-blocks-slick-html-parent/k-blocks', {
     arrowsPositionClass: { type: 'string', default: '' },
     dotsColorClass: { type: 'string', default: '' },
     dotsSizeClass: { type: 'string', default: '' },
-    dotsPositionClass: { type: 'string', default: 'arrows-inner' },
+    dotsPositionClass: { type: 'string', default: '' },
     centerMode: { type: 'boolean', default: false },
     adaptiveHeight: { type: 'boolean', default: false },
     variableWidth: { type: 'boolean', default: false },
@@ -128,7 +130,14 @@ registerBlockType('k-blocks-slick-html-parent/k-blocks', {
     slidesToScrollLG: { type: 'number', default: 1 },
     responsiveXL: { type: 'boolean', default: false },
     slidesToShowXL: { type: 'number', default: 1 },
-    slidesToScrollXL: { type: 'number', default: 1 }
+    slidesToScrollXL: { type: 'number', default: 1 },
+    responsiveXXL: { type: 'boolean', default: false },
+    slidesToShowXXL: { type: 'number', default: 1 },
+    slidesToScrollXXL: { type: 'number', default: 1 },
+    isUnsilkOnMobile: { type: 'boolean', default: false },
+    /* slides padding */
+    slidePadding: { type: 'number', default: 0 },
+    isSlidePaddingAlign: { type: 'boolean', default: false }
   },
 
   /*=============================================================================*/
@@ -163,6 +172,7 @@ registerBlockType('k-blocks-slick-html-parent/k-blocks', {
     });
 
     var styleHtml = '\n      #html-gallery-' + att.blockID + ' .k-blocks-slick-html-slide .k-blocks-slick-html-inner-content.row,\n      .slider-edit-' + att.blockID + ' .k-blocks-slick-html-slide>div>.k-bs-grid>.block-editor-inner-blocks>.block-editor-block-list__layout,\n      .slider-edit-' + att.blockID + ' .k-blocks-slick-html-slide>.k-bs-grid>.block-editor-inner-blocks>.block-editor-block-list__layout {\n        min-height: ' + att.minHeight + 'rem;\n      }\n    ';
+    styleHtml += getDynamicStyleHtml(props);
 
     var styleHtmlEdit = '\n      .slider-edit-' + att.blockID + '>div>.block-editor-block-list__layout {\n      \tdisplay: flex;\n        flex-wrap: wrap;\n        justify-content: start;\n        padding-left: 8px;\n        padding-right: 8px;\n      }\n      .slider-edit-' + att.blockID + '>div>div>.k-blocks-slick-html-slide-content.d-block {\n        flex: 0 0 calc( 100% / ' + att.slidesToShow + ' - 16px );\n        max-width: calc( 100% / ' + att.slidesToShow + ' - 16px );\n        margin-left: 8px;\n        margin-right: 8px;\n      }\n      .slider-edit-' + att.blockID + '>div>div>.block-list-appender.wp-block {\n        width: calc( 100% - 16px );\n        margin-left: 8px;\n        margin-right: 8px;\n      }\n    ';
 
@@ -200,7 +210,7 @@ registerBlockType('k-blocks-slick-html-parent/k-blocks', {
           Fragment,
           null,
           wp.element.createElement('div', {
-            className: "hero-gallery",
+            className: "k-slider",
             id: "html-gallery-" + att.blockID,
             dangerouslySetInnerHTML: { __html: sliderHtml }
           }),
@@ -220,31 +230,26 @@ registerBlockType('k-blocks-slick-html-parent/k-blocks', {
     var att = props.attributes;
 
     var responsiveOptionsRaw = '';
-    if (props.attributes.responsiveSM) {
-      responsiveOptionsRaw += '\n      {\n        breakpoint: 576,\n        settings: {\n          slidesToShow: ' + props.attributes.slidesToShowSM + ',\n          slidesToScroll: ' + props.attributes.slidesToScrollSM + ',\n        }\n      },';
-    }
-    if (props.attributes.responsiveMD) {
-      responsiveOptionsRaw += '\n      {\n        breakpoint: 768,\n        settings: {\n          slidesToShow: ' + props.attributes.slidesToShowMD + ',\n          slidesToScroll: ' + props.attributes.slidesToScrollMD + ',\n        }\n      },';
-    }
-    if (props.attributes.responsiveLG) {
-      responsiveOptionsRaw += '\n      {\n        breakpoint: 960,\n        settings: {\n          slidesToShow: ' + props.attributes.slidesToShowLG + ',\n          slidesToScroll: ' + props.attributes.slidesToScrollLG + ',\n        }\n      },';
-    }
-    if (props.attributes.responsiveXL) {
-      responsiveOptionsRaw += '\n      {\n        breakpoint: 1140,\n        settings: {\n          slidesToShow: ' + props.attributes.slidesToShowXL + ',\n          slidesToScroll: ' + props.attributes.slidesToScrollXL + ',\n        }\n      },';
-    }
+    if (att.isUnsilkOnMobile) responsiveOptionsRaw += '\n      { breakpoint: 1, settings: \'unslick\' },\n      { breakpoint: 480, settings: { slidesToShow: ' + att.slidesToShow + ', slidesToScroll: ' + att.slidesToScroll + ', } },';
+    if (att.responsiveSM) responsiveOptionsRaw += '\n      { breakpoint: 576, settings: { slidesToShow: ' + att.slidesToShowSM + ', slidesToScroll: ' + att.slidesToScrollSM + ', } },';
+    if (att.responsiveMD) responsiveOptionsRaw += '\n      { breakpoint: 768, settings: { slidesToShow: ' + att.slidesToShowMD + ', slidesToScroll: ' + att.slidesToScrollMD + ', } },';
+    if (att.responsiveLG) responsiveOptionsRaw += '\n      { breakpoint: 992, settings: { slidesToShow: ' + att.slidesToShowLG + ', slidesToScroll: ' + att.slidesToScrollLG + ', } },';
+    if (att.responsiveXL) responsiveOptionsRaw += '\n      { breakpoint: 1200, settings: { slidesToShow: ' + att.slidesToShowXL + ', slidesToScroll: ' + att.slidesToScrollXL + ', } },';
+    if (att.responsiveXXL) responsiveOptionsRaw += '\n      { breakpoint: 1400, settings: { slidesToShow: ' + att.slidesToShowXXL + ', slidesToScroll: ' + att.slidesToScrollXXL + ', } },';
 
-    var frontEndScript = '\n    jQuery(document).ready(function($) {\n      $("#html-gallery-' + att.blockID + '").slick({\n        slidesToShow: ' + props.attributes.slidesToShow + ',\n        slidesToScroll: ' + props.attributes.slidesToScroll + ',\n        arrows: ' + props.attributes.arrows + ',\n        dots: ' + props.attributes.dots + ',\n        infinite: ' + props.attributes.infinite + ',\n        autoplay: ' + props.attributes.autoplay + ',\n        fade: ' + props.attributes.fade + ',\n        pauseOnHover: ' + props.attributes.pauseOnHover + ',\n        adaptiveHeight: true,\n        responsive: [\n          ' + responsiveOptionsRaw + '\n        ]\n      });\n    });';
+    var frontEndScript = '\n    jQuery(document).ready(function($) {\n      var options = {\n        slidesToShow: ' + props.attributes.slidesToShow + ',\n        slidesToScroll: ' + props.attributes.slidesToScroll + ',\n        arrows: ' + props.attributes.arrows + ',\n        dots: ' + props.attributes.dots + ',\n        infinite: ' + props.attributes.infinite + ',\n        autoplay: ' + props.attributes.autoplay + ',\n        fade: ' + props.attributes.fade + ',\n        pauseOnHover: ' + props.attributes.pauseOnHover + ',\n        adaptiveHeight: true,\n        mobileFirst: true,\n        responsive: [' + responsiveOptionsRaw + ']\n      }\n      $("#html-gallery-' + att.blockID + '").not(\'.slick-initialized\').slick(options);\n      $(window).on( \'resize\', function() {\n        $("#html-gallery-' + att.blockID + '").not(\'.slick-initialized\').slick(options);\n      } );\n    });';
 
     return wp.element.createElement(
       'div',
       { className: "k-blocks-slick-html-parent html-gallery " + controlClasses(props) },
+      wp.element.createElement('style', { dangerouslySetInnerHTML: { __html: "#html-gallery-" + att.blockID + " .k-blocks-slick-html-inner-content.row { min-height: " + att.minHeight + "rem }" } }),
+      wp.element.createElement('style', { dangerouslySetInnerHTML: { __html: getDynamicStyleHtml(props) } }),
       wp.element.createElement(
         'div',
-        { id: "html-gallery-" + att.blockID },
+        { className: 'k-slider', id: "html-gallery-" + att.blockID },
         wp.element.createElement(InnerBlocks.Content, null)
       ),
-      wp.element.createElement('script', { dangerouslySetInnerHTML: { __html: frontEndScript } }),
-      wp.element.createElement('style', { dangerouslySetInnerHTML: { __html: "#html-gallery-" + att.blockID + " .k-blocks-slick-html-inner-content.row { min-height: " + att.minHeight + "rem }" } })
+      wp.element.createElement('script', { dangerouslySetInnerHTML: { __html: frontEndScript } })
     );
   }
 });
@@ -317,7 +322,7 @@ registerBlockType('k-blocks-slick-html-child/k-blocks', {
             color: atts.color ? atts.color : 'inherit',
             backgroundColor: atts.bgColor ? atts.bgColor : 'transparent',
             backgroundImage: (atts.bgGradient ? atts.bgGradient : 'none') + ',' + (atts.bgImage ? "url('" + atts.bgImage + "')" : 'none'),
-            backgroundSize: atts.bgImageType == 'cover' ? 'auto, cover' : atts.bgImageType == 'cover' ? 'auto, contain' : 'auto, auto',
+            backgroundSize: atts.bgImageType == 'cover' ? 'auto, cover' : 'auto, contain',
             backgroundRepeat: atts.bgImageType != 'repeat' ? 'no-repeat,no-repeat' : 'no-repeat,repeat',
             backgroundPosition: atts.bgImageType != 'repeat' ? 'center,' + atts.bgImageFocal.x * 100 + '% ' + atts.bgImageFocal.y * 100 + '%' : 'center,center'
           }
@@ -362,7 +367,7 @@ registerBlockType('k-blocks-slick-html-child/k-blocks', {
             color: atts.color ? atts.color : 'inherit',
             backgroundColor: atts.bgColor ? atts.bgColor : 'transparent',
             backgroundImage: (atts.bgGradient ? atts.bgGradient : 'none') + ',' + (atts.bgImage ? "url('" + atts.bgImage + "')" : 'none'),
-            backgroundSize: atts.bgImageType == 'cover' ? 'auto, cover' : atts.bgImageType == 'cover' ? 'auto, contain' : 'auto, auto',
+            backgroundSize: atts.bgImageType == 'cover' ? 'auto, cover' : 'auto, contain',
             backgroundRepeat: atts.bgImageType != 'repeat' ? 'no-repeat,no-repeat' : 'no-repeat,repeat',
             backgroundPosition: atts.bgImageType != 'repeat' ? 'center,' + atts.bgImageFocal.x * 100 + '% ' + atts.bgImageFocal.y * 100 + '%' : 'center,center'
           }
@@ -394,16 +399,30 @@ registerBlockType('k-blocks-slick-html-child/k-blocks', {
 
 function controlClasses(props) {
   var att = props.attributes;
-  var allClasses = void 0;
+  var allClasses = [];
   if (!att.isControlsCustom) {
-    allClasses = [att.arrowsColorClass, att.arrowsSizeClass, att.arrowsPositionClass, att.dotsColorClass, att.dotsSizeClass, att.dotsPositionClass];
+    if (att.arrows) allClasses = [].concat(_toConsumableArray(allClasses), ['has-arrows', att.arrowsColorClass, att.arrowsPositionClass, att.arrowsSizeClass]);
+    if (att.dots) allClasses = [].concat(_toConsumableArray(allClasses), ['has-dots', att.dotsColorClass, att.dotsSizeClass, att.dotsPositionClass]);
   } else {
     allClasses = ['custom-controls', att.isControlsCustom];
   }
-  if (att.arrows) allClasses.push('has-arrows');
-  if (att.dots) allClasses.push('has-dots');
   return allClasses.filter(function (e) {
     return e !== '';
   }).join(' ');
+}
+
+function getDynamicStyleHtml(props) {
+  var att = props.attributes;
+  var dynamicStyle = '\n    #html-gallery-' + att.blockID + ' .k-blocks-slick-html-slide {\n      margin-left: ' + att.slidePadding / 2 + 'rem;\n      margin-right: ' + att.slidePadding / 2 + 'rem;\n    }';
+  if (att.isSlidePaddingAlign) dynamicStyle += '\n    #html-gallery-' + att.blockID + ':not(.slick-initialized),\n    #html-gallery-' + att.blockID + ' .slick-list {\n      margin-left: -' + att.slidePadding / 2 + 'rem;\n      margin-right: -' + att.slidePadding / 2 + 'rem;\n    }';
+  /* not initialized galley show */
+  dynamicStyle += '\n    #html-gallery-' + att.blockID + ':not(.slick-initialized) { display:flex; overflow-x:hidden; }\n    #html-gallery-' + att.blockID + ':not(.slick-initialized) .k-blocks-slick-html-slide {\n      width:calc(100%/' + att.slidesToShow + ' - ' + att.slidePadding + 'rem); flex-shrink: 0; flex-grow: 0;\n    }';
+  if (att.isUnsilkOnMobile) dynamicStyle += '\n    @media (max-width: 480px) {\n      #html-gallery-' + att.blockID + ':not(.slick-initialized) { overflow-x:auto; }\n    }';
+  if (att.responsiveSM) dynamicStyle += '\n    @media (min-width: 576px) {\n      #html-gallery-' + att.blockID + ':not(.slick-initialized) .k-blocks-slick-html-slide { width:calc(100%/' + att.slidesToShowSM + ' - ' + att.slidePadding + 'rem); }\n    }';
+  if (att.responsiveMD) dynamicStyle += '\n    @media (min-width: 768px) {\n      #html-gallery-' + att.blockID + ':not(.slick-initialized) .k-blocks-slick-html-slide { width:calc(100%/' + att.slidesToShowMD + ' - ' + att.slidePadding + 'rem); }\n    }';
+  if (att.responsiveLG) dynamicStyle += '\n    @media (min-width: 992px) {\n      #html-gallery-' + att.blockID + ':not(.slick-initialized) .k-blocks-slick-html-slide { width:calc(100%/' + att.slidesToShowLG + ' - ' + att.slidePadding + 'rem); }\n    }';
+  if (att.responsiveXL) dynamicStyle += '\n    @media (min-width: 1200px) {\n      #html-gallery-' + att.blockID + ':not(.slick-initialized) .k-blocks-slick-html-slide { width:calc(100%/' + att.slidesToShowXL + ' - ' + att.slidePadding + 'rem); }\n    }';
+  if (att.responsiveXXL) dynamicStyle += '\n    @media (min-width: 1400px) {\n      #html-gallery-' + att.blockID + ':not(.slick-initialized) .k-blocks-slick-html-slide { width:calc(100%/' + att.slidesToShowXXL + ' - ' + att.slidePadding + 'rem); }\n    }';
+  return dynamicStyle;
 }
 //# sourceMappingURL=block.js.map

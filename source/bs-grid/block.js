@@ -54,13 +54,14 @@ function addValignClass(props) {
 
 /* common functions */
 function bsGetColClasses(props) {
-  var classes = "";
+  var classes = " col";
   if (props.attributes.colBreakpoint != 0) classes += " col-" + props.attributes.colBreakpoint;
   if (props.attributes.colSmBreakpoint != 0) classes += " col-sm-" + props.attributes.colSmBreakpoint;
   if (props.attributes.colMdBreakpoint != 0) classes += " col-md-" + props.attributes.colMdBreakpoint;
   if (props.attributes.colLgBreakpoint != 0) classes += " col-lg-" + props.attributes.colLgBreakpoint;
   if (props.attributes.colXlBreakpoint != 0) classes += " col-xl-" + props.attributes.colXlBreakpoint;
-  if (classes == "") classes = " col";
+  if (props.attributes.colXXlBreakpoint != 0) classes += " col-xxl-" + props.attributes.colXXlBreakpoint;
+  //if ( classes == "" )  classes = " col";
   return classes;
 }
 
@@ -75,7 +76,7 @@ registerBlockType('k-blocks-bs-grid-child/k-blocks', {
     /* breakpoints */
     colBreakpoint: { type: 'number', default: 0 },
     colSmBreakpoint: { type: 'number', default: 0 }
-  }, _defineProperty(_attributes, 'colSmBreakpoint', { type: 'number', default: 0 }), _defineProperty(_attributes, 'colMdBreakpoint', { type: 'number', default: 0 }), _defineProperty(_attributes, 'colLgBreakpoint', { type: 'number', default: 0 }), _defineProperty(_attributes, 'colXlBreakpoint', { type: 'number', default: 0 }), _defineProperty(_attributes, 'color', { type: 'string', default: '' }), _defineProperty(_attributes, 'bgColor', { type: 'string', default: '' }), _defineProperty(_attributes, 'bgGradient', { type: 'string', default: false }), _defineProperty(_attributes, 'bgImage', { type: 'string' }), _defineProperty(_attributes, 'bgImageId', { type: 'integer', default: 0 }), _defineProperty(_attributes, 'bgImageType', { type: 'string', default: 'cover' }), _defineProperty(_attributes, 'bgImageFocal', { type: 'object', default: { x: '0.5', y: '0.5' } }), _attributes),
+  }, _defineProperty(_attributes, 'colSmBreakpoint', { type: 'number', default: 0 }), _defineProperty(_attributes, 'colMdBreakpoint', { type: 'number', default: 0 }), _defineProperty(_attributes, 'colLgBreakpoint', { type: 'number', default: 0 }), _defineProperty(_attributes, 'colXlBreakpoint', { type: 'number', default: 0 }), _defineProperty(_attributes, 'colXXlBreakpoint', { type: 'number', default: 0 }), _defineProperty(_attributes, 'color', { type: 'string', default: '' }), _defineProperty(_attributes, 'bgColor', { type: 'string', default: '' }), _defineProperty(_attributes, 'bgGradient', { type: 'string', default: false }), _defineProperty(_attributes, 'bgImage', { type: 'string' }), _defineProperty(_attributes, 'bgImageId', { type: 'integer', default: 0 }), _defineProperty(_attributes, 'bgImageType', { type: 'string', default: 'cover' }), _defineProperty(_attributes, 'bgImageFocal', { type: 'object', default: { x: '0.5', y: '0.5' } }), _attributes),
 
   /*-----------------------------------------------------------------------------*/
   /*                                EDIT CHILD                                   */

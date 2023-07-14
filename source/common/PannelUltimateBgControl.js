@@ -59,7 +59,12 @@ function PannelUltimateBgControl(args) {
 	    PanelBody = _wp$components.PanelBody,
 	    PanelRow = _wp$components.PanelRow,
 	    SelectControl = _wp$components.SelectControl,
-	    FocalPointPicker = _wp$components.FocalPointPicker;
+	    FocalPointPicker = _wp$components.FocalPointPicker,
+	    Dropdown = _wp$components.Dropdown,
+	    Flex = _wp$components.Flex,
+	    FlexItem = _wp$components.FlexItem,
+	    GradientPicker = _wp$components.GradientPicker,
+	    ColorIndicator = _wp$components.ColorIndicator;
 	var Fragment = wp.element.Fragment;
 
 	if (args.colorValue == undefined) {
@@ -99,7 +104,7 @@ function PannelUltimateBgControl(args) {
 			{ title: __('Background image'), initialOpen: false },
 			wp.element.createElement(
 				'div',
-				{ className: 'editor-slide-featured-image', style: { marginBottom: "24px" } },
+				{ className: 'editor-slide-featured-image', style: { marginBottom: "24px", marginTop: "18px" } },
 				wp.element.createElement(
 					MediaUploadCheck,
 					null,
@@ -123,7 +128,6 @@ function PannelUltimateBgControl(args) {
 										backgroundRepeat: args.bgStyleValue == 'repeat' ? "repeat" : "no-repeat",
 										backgroundPosition: args.bgStyleValue == 'repeat' ? "top left" : "center",
 										height: "180px",
-										marginBottom: "20px",
 										backgroundColor: "#f0f0f0"
 									}
 								})
@@ -138,8 +142,8 @@ function PannelUltimateBgControl(args) {
 					onChange: args.onBgImageFocalChange
 				}),
 				args.bgImgUrlValue != "none" && wp.element.createElement(
-					Fragment,
-					null,
+					'div',
+					{ style: { marginTop: "24px" } },
 					wp.element.createElement(
 						MediaUploadCheck,
 						null,
@@ -171,21 +175,54 @@ function PannelUltimateBgControl(args) {
 			),
 			args.bgImgUrlValue != "none" && args.onBgStyleChange != undefined && wp.element.createElement(SelectControl, {
 				label: __('Background type'),
+				labelPosition: 'side',
 				value: args.bgStyleValue,
 				onChange: args.onBgStyleChange,
 				options: [{ value: 'cover', label: __('Cover') }, { value: 'contain', label: __('Contain') }]
+			}),
+			wp.element.createElement(Dropdown, {
+				className: 'm-color-button-wrapper m-color-button-wrapper-gradient',
+				style: { width: '100%', marginBottom: '1rem' },
+				contentClassName: 'm-color-popover-content',
+				popoverProps: { placement: 'bottom-start' },
+				renderToggle: function renderToggle(_ref3) {
+					var isOpen = _ref3.isOpen,
+					    onToggle = _ref3.onToggle;
+					return wp.element.createElement(
+						Button,
+						{
+							onClick: onToggle,
+							'aria-expanded': isOpen,
+							className: 'm-color-button m-color-button-gradient is-secondary',
+							style: { width: '100%' }
+						},
+						wp.element.createElement(
+							Flex,
+							{ justify: 'start' },
+							wp.element.createElement(ColorIndicator, { colorValue: args.gradientOvelayValue, __nextHasNoMargin: true }),
+							wp.element.createElement(
+								FlexItem,
+								null,
+								__('Gradient overlay')
+							)
+						)
+					);
+				},
+				renderContent: function renderContent() {
+					return wp.element.createElement(
+						'div',
+						{ style: { width: '240px' } },
+						wp.element.createElement(GradientPicker, {
+							__nextHasNoMargin: true,
+							value: args.gradientOvelayValue,
+							onChange: args.onGradientOverlayChange,
+							gradients: overlayGradients,
+							clearable: false
+						})
+					);
+				}
 			})
-		),
-		args.onGradientOverlayChange != undefined && wp.element.createElement(__experimentalPanelColorGradientSettings, {
-			title: __('Gradient overlay'),
-			initialOpen: false,
-			settings: [{
-				label: __('Background Overlay'),
-				gradients: overlayGradients,
-				gradientValue: args.gradientOvelayValue,
-				onGradientChange: args.onGradientOverlayChange
-			}]
-		})
+		)
 	);
 }
 //# sourceMappingURL=PannelUltimateBgControl.js.map

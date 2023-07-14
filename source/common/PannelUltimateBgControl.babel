@@ -42,7 +42,7 @@ bgImageType: { type: 'string', default: 'cover', },
 export function PannelUltimateBgControl(args) {
 	const { __ } = wp.i18n;
 	const { MediaUpload, MediaUploadCheck, MediaPlaceholder, __experimentalPanelColorGradientSettings } = wp.blockEditor;
-	const { Button, Dashicon, SVG, Path, PanelBody, PanelRow, SelectControl, FocalPointPicker } = wp.components;
+	const { Button, Dashicon, SVG, Path, PanelBody, PanelRow, SelectControl, FocalPointPicker, Dropdown, Flex, FlexItem, GradientPicker, ColorIndicator } = wp.components;
 	const { Fragment } = wp.element;
 	if ( args.colorValue==undefined ) { args.colorValue = 'inherit' }
 	if ( args.bgColorValue==undefined ) { args.bgColorValue = 'transparent' }
@@ -74,7 +74,7 @@ export function PannelUltimateBgControl(args) {
 		}
 		{ ( args.onBgImgSelect!=undefined && args.onSetDefaultClick!=undefined ) &&
 			<PanelBody title={__('Background image')} initialOpen={ false }>
-				<div className="editor-slide-featured-image" style={{ marginBottom: "24px" }}>
+				<div className="editor-slide-featured-image" style={{ marginBottom: "24px", marginTop: "18px" }}>
 					<MediaUploadCheck>
 						<MediaUpload
 							onSelect={ args.onBgImgSelect }
@@ -95,7 +95,6 @@ export function PannelUltimateBgControl(args) {
 												backgroundRepeat: args.bgStyleValue=='repeat' ? "repeat" : "no-repeat",
 												backgroundPosition: args.bgStyleValue=='repeat' ? "top left" :  "center",
 												height: "180px",
-												marginBottom: "20px",
 												backgroundColor: "#f0f0f0",
 											} }
 										>
@@ -114,7 +113,7 @@ export function PannelUltimateBgControl(args) {
 						/>
 					}
 					{args.bgImgUrlValue != "none" &&
-						<Fragment>
+						<div style={{ marginTop: "24px" }}>
 							<MediaUploadCheck>
 								<MediaUpload
 									title={ __('Replace image') }
@@ -129,12 +128,13 @@ export function PannelUltimateBgControl(args) {
 							<MediaUploadCheck>
 								<Button onClick={ args.onSetDefaultClick } isLink isDestructive style={{marginLeft:"20px"}} >{__('Remove image')}</Button>
 							</MediaUploadCheck>
-						</Fragment>
+						</div>
 					}
 				</div>
 				{ ( args.bgImgUrlValue != "none" ) && ( args.onBgStyleChange!=undefined ) &&
 					<SelectControl
 						label={ __( 'Background type' ) }
+						labelPosition="side"
 						value={ args.bgStyleValue }
 						onChange={ args.onBgStyleChange }
 						options={ [
@@ -143,21 +143,37 @@ export function PannelUltimateBgControl(args) {
 						] }
 					/>
 				}
+				<Dropdown
+					className="m-color-button-wrapper m-color-button-wrapper-gradient"
+					style={ { width:'100%', marginBottom:'1rem' } }
+					contentClassName="m-color-popover-content"
+					popoverProps={ { placement: 'bottom-start' } }
+					renderToggle={ ( { isOpen, onToggle } ) => (
+						<Button
+							onClick={ onToggle }
+							aria-expanded={ isOpen }
+							className="m-color-button m-color-button-gradient is-secondary"
+							style={ { width:'100%' } }
+						>
+							<Flex justify="start">
+								<ColorIndicator colorValue={ args.gradientOvelayValue } __nextHasNoMargin />
+								<FlexItem>{ __( 'Gradient overlay') }</FlexItem>
+							</Flex>
+						</Button>
+					) }
+					renderContent={ () => (
+						<div style={ { width:'240px' } }>
+							<GradientPicker
+								__nextHasNoMargin
+								value={ args.gradientOvelayValue }
+								onChange={ args.onGradientOverlayChange }
+								gradients={ overlayGradients }
+								clearable={ false }
+							/>
+						</div>
+					) }
+				/>
 			</PanelBody>
-		}
-		{ ( args.onGradientOverlayChange!=undefined ) &&
-			<__experimentalPanelColorGradientSettings
-				title={ __( 'Gradient overlay' ) }
-				initialOpen={ false }
-				settings={ [
-					{
-						label: __( 'Background Overlay' ),
-						gradients: overlayGradients,
-						gradientValue: args.gradientOvelayValue,
-						onGradientChange: args.onGradientOverlayChange,
-					},
-				] }
-			/>
 		}
 	</Fragment>
 	);

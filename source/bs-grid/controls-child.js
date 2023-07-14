@@ -172,6 +172,28 @@ function ControlsChild(args) {
                 }
               })
             )
+          ),
+          wp.element.createElement(
+            Flex,
+            { style: { paddingLeft: '0.8rem', paddingRight: '0.8rem' } },
+            wp.element.createElement(
+              FlexItem,
+              { className: 'k-bs-grid-cols-selector', style: { paddingTop: '0.6rem', paddingBottom: '0.6rem' } },
+              wp.element.createElement(CheckboxControl, { label: "XXL", checked: Boolean(atts.colXXlBreakpoint),
+                onChange: function onChange() {
+                  if (Boolean(atts.colXXlBreakpoint)) props.setAttributes({ colXXlBreakpoint: 0 });else props.setAttributes({ colXXlBreakpoint: 6 });
+                }
+              })
+            ),
+            wp.element.createElement(
+              FlexBlock,
+              { className: 'k-bs-grid-cols-range' },
+              Boolean(atts.colXXlBreakpoint) && wp.element.createElement(RangeControl, { value: atts.colXXlBreakpoint, min: 1, max: 12,
+                onChange: function onChange(newvalue) {
+                  return props.setAttributes({ colXXlBreakpoint: newvalue });
+                }
+              })
+            )
           )
         )
       ),
